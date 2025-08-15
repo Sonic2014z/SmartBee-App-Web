@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambio de contraseña - SmartBee</title>
+    <!-- Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body>
+    <div class="contenedor">
+        <div class="cuadro z-depth-2 row">
+            <!-- Botón volver -->
+            <div class="col s12">
+                <a href="/" class="btn white-text"
+                    style="background-color: #d17a00; margin: 15px;">
+                    <i class="material-icons left">arrow_back</i>Iniciar Sesión
+                </a>
+            </div>
+
+            <!-- Columna izquierda -->
+            <div class="col s12 m6 center-align" style="padding: 30px;">
+                <!-- Imagen de hexágonos -->
+                <img src="res/logo.png" alt="Logo" style="max-width: 200px;">
+                <h6 class="texto-arriba">COLMENAS INTELIGENTES</h6>
+                <h3 class="titulo">SMART BEE</h3>
+            </div>
+
+            <!-- Columna derecha -->
+            <div class="col s12 m6" style="padding: 30px;">
+                <h5 class="titulo-login">Cambio de contraseña</h5>
+
+                <div class="input-field">
+                    <input id="password" type="password" class="validate">
+                    <label for="password">Contraseña</label>
+                </div>
+
+                <div class="input-field">
+                    <input id="repeat_password" type="password" class="validate">
+                    <label for="repeat_password">Repetir Contraseña</label>
+                </div>
+
+                <a href="#!" id="btnCambiar" class="btn boton-login waves-effect waves-light">
+                    Cambiar contraseña
+                </a>
+
+
+                <p class="pie">© 2025 SmartBee</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Materialize JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.getElementById("btnCambiar").addEventListener("click", function () {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Buen trabajo!',
+                text: 'La contraseña se ha cambiado correctamente.',
+                confirmButtonColor: '#6c63ff'
+            });
+        });
+    </script>
+
+</body>
+
+</html>

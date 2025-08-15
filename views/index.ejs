@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartBee - Iniciar Sesión</title>
+
+  <!-- Materialize CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Estilos personalizados -->
+  <link rel="stylesheet" href="css/estilos.css">
+
+</head>
+
+<body>
+
+  <div class="contenedor">
+    <div class="cuadro z-depth-3">
+      <div class="row fila-sin-margen">
+
+        <!-- Lado izquierdo -->
+        <div class="col s12 m6 center-align lado-izq">
+          <div class="logo">
+            <br>
+            <img src="res/logo.png" alt="Logo" class="responsive-img" style="max-width: 200px;">
+          </div>
+          <br>
+          <br>
+          <p class="texto-arriba">COLMENAS INTELIGENTES</p>
+          <h3 class="titulo">SMARTBEE</h3>
+          <p class="texto">
+            Monitorea en tiempo real la
+            <span class="resaltado">humedad</span>,
+            <span class="resaltado">temperatura</span>
+            y <span class="resaltado">peso</span> de tus colmenas.
+          </p>
+          <br>
+          <div class="boton-peq">Rápido</div>
+          <div class="boton-peq">Seguro</div>
+          <div class="boton-peq">Escalable</div>
+        </div>
+
+        <!-- Lado derecho -->
+        <div class="col s12 m6 lado-der">
+          <br>
+          <h6 class="texto-bienvenido">Bienvenido</h6>
+          <br>
+          <h5 class="titulo-login">Iniciar sesión</h5>
+
+          <form action="/login" method="POST" id="loginForm">
+            <div class="input-field">
+              <input id="identificador" name="identificador" type="text">
+              <label for="identificador">Identificador</label>
+            </div>
+
+            <div class="input-field">
+              <input id="clave" name="clave" type="password">
+              <label for="clave">Contraseña</label>
+            </div>
+
+            <button type="submit" class="btn waves-effect waves-light boton-login">Iniciar Sesión</button>
+
+            <% if(typeof mensaje !=='undefined' ) { %>
+              <p class="red-text">
+                <%= mensaje %>
+              </p>
+              <% } %>
+          </form>
+
+          <p class="pie">© 2025 SmartBee</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Materialize JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('loginForm');
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault(); // Evita que recargue la página
+
+        const identificador = document.getElementById('identificador').value.trim();
+        const clave = document.getElementById('clave').value.trim(); // CORRECCIÓN
+
+        // Validación simple
+        if (identificador === "" || clave === "") {
+          M.toast({ html: 'Por favor ingresa identificador y clave', classes: 'red' });
+          return;
+        }
+
+        // Enviar datos al backend usando fetch
+        fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identificador, clave })
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              M.toast({ html: 'Login exitoso', classes: 'green' });
+              window.location.href = "/panel";
+            } else {
+              M.toast({ html: data.message, classes: 'red' });
+            }
+          })
+          .catch(err => {
+            M.toast({ html: 'Error en el servidor', classes: 'red' });
+            console.error(err);
+          });
+      });
+    });
+
+  </script>
+
+</body>
+
+</html>

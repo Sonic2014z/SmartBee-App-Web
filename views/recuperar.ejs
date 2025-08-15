@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Contraseña - SmartBee</title>
+    <!-- Importar Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <!-- Fuente Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <!--Importar Iconos-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Estilos personalizados -->
+   <link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body>
+    <div class="contenedor">
+        <div class="cuadro z-depth-2 row">
+            <!-- Botón Volver -->
+            <div class="col s12">
+                <a href="/" class="btn white-text"
+                    style="background-color: #d17a00; margin: 15px;">
+                    <i class="material-icons left">arrow_back</i>Iniciar Sesión
+                </a>
+            </div>
+
+            <!-- Logo y texto -->
+            <div class="col s12 m6 center-align" style="padding: 30px;">
+                <img src="res/logo.png" alt="SmartBee" style="max-width: 200px;">
+                <h6 class="texto-arriba">COLMENAS INTELIGENTES</h6>
+                <h3 class="titulo">SMART BEE</h3>
+            </div>
+
+            <!-- Formulario -->
+            <div class="col s12 m6" style="padding: 30px;">
+                <h5 class="titulo-login">Recuperar contraseña</h5>
+                <div class="input-field">
+                    <input id="identificador" type="text" class="validate" value="135464865">
+                    <label for="identificador">Identificador</label>
+                </div>
+                <a href="/restablecer" class="btn boton-login waves-effect waves-light">
+                    Recuperar Contraseña
+                </a>
+
+                <p class="pie">© 2025 SmartBee</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Materialize JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+
+</html>
