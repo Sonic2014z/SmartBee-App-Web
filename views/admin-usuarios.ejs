@@ -1,0 +1,51 @@
+<div class="container" style="background-color: #fff; border-radius: 15px; padding: 20px;">
+    <table class="highlight responsive-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% usuarios.forEach(usuario=> { %>
+                <tr>
+                    <td>
+                        <%= usuario.id %>
+                    </td>
+                    <td>
+                        <%= usuario.nombre %>
+                    </td>
+                    <td>
+                        <%= usuario.apellido %>
+                    </td>
+                    <td>
+                        <% if (usuario.rol=="API" ) { %>
+                            Apicultor
+                            <% }else{ %>
+                                Administrador
+                                <% } %>
+                    </td>
+
+                    <% if (usuario.rol=="API" ) { %>
+                        <td>
+                            <a href="/admin/usuarios/editar/<%= usuario.id %>"
+                                class="waves-effect waves-light btn blue">Editar</a>
+                            <a href="/admin/usuarios/eliminar/<%= usuario.id %>"
+                                class="waves-effect waves-light btn red">Eliminar</a>
+                        </td>
+                        <% }else{ %>
+                            <td>
+                                <a href="/admin/usuarios/editar/<%= usuario.id %>"
+                                    class="waves-effect waves-light btn blue">Editar</a>
+                                <a class="waves-effect waves-light btn red disabled">Eliminar</a>
+                            </td>
+                            <% } %>
+                </tr>
+                <% }); %>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>
+        <%= title || "SmartBee Admin" %>
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Materialize CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Estilos propios -->
+    <link rel="stylesheet" href="/css/estilos.css">
+
+    <style>
+        body {
+            background-color: #FEF5E7;
+            font-family: 'Roboto'
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        @media (min-width: 992px) {
+            main {
+                margin-left: 300px;
+            }
+        }
+
+        nav {
+            background-color: #d17a00;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <div class="nav-wrapper">
+            <a href="/" class="brand-logo center">SmartBee</a>
+            <!-- Botón para abrir sidebar en mobile -->
+            <a href="#" data-target="slide-out" class="sidenav-trigger left">
+                <i class="material-icons">menu</i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <ul id="slide-out" class="sidenav sidenav-fixed">
+        <li>
+            <div class="user-view">
+                <div class="background"></div>
+                <a><img class="circle" src="/res/imagen-perfil.jpg"></a>
+                <a><span class="white-text name">Administración</span></a>
+            </div>
+        </li>
+        <li><a href="/admin/usuarios" class="white-text"><i class="material-icons white-text">people</i>Usuarios</a>
+        </li>
+        <li><a href="/admin/nodos" class="white-text"><i
+                    class="material-icons white-text">location_searching</i>Nodos</a></li>
+        <li><a href="/admin/config" class="white-text"><i
+                    class="material-icons white-text">settings</i>Configuración</a></li>
+        <li>
+            <div class="divider"></div>
+        </li>
+        <li><a href="/logout" class="white-text"><i class="material-icons white-text">exit_to_app</i>Salir</a></li>
+    </ul>
+
+    <!-- Contenido principal -->
+    <main>
+            <%- body %>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var elems = document.querySelectorAll('.sidenav');
+            M.Sidenav.init(elems);
+        });
+    </script>
+</body>
+
+</html>
