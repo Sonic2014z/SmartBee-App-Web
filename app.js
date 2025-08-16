@@ -71,6 +71,35 @@ app.get('/panel', (req, res) => {
 });
 
 
+
+
+/**
+ * 
+ * api/nodo_mensajes el cual obtiene los mensajes de los nodos
+ * en formato JSON. ejemplo:  {"nodo_id":"NODO-XXXX","temperatura":23.5,"humedad":60.4}
+ * @author SmartBee Tea - Sede Rancagua 
+ * validado por VRC -> @date 2025-08-16
+ * @version 1.0
+ * @description Esta ruta obtiene los mensajes de los nodos desde la base de datos cuando implementes coors deben agregar un API KEY 
+ * para mayor seguridad.  
+ */
+
+app.get('/api/nodo_mensajes' , (req, res) => {
+
+    const query = 'SELECT id, nodo_id , topico, payload, fecha FROM  nodo_mensaje ';
+    oConexion.query(query, (err, results) => {
+        if(err) {
+            console.error(err);
+            return res.status(500).json({ success: false, message: 'Error en la base de datos' });
+        }
+
+        res.json({ success: true, data: results });
+    });
+});
+
+
+
+
 app.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}`);
 });
