@@ -27,6 +27,16 @@ app.get('/recuperar', (req, res) => {
 app.get('/restablecer', (req, res) => {
     res.render('restablecer');
 });
+app.get('/panelapicultor', (req, res) => {
+    res.render('panelapicultor');
+});
+app.get('/paneladministrador', (req, res) => {
+    res.render('paneladministrador');
+});
+app.get('/configuracionperfil', (req, res) => {
+    res.render('configuracionperfil');
+});
+
 // Ruta para procesar login
 const bcrypt = require('bcrypt');
 
@@ -50,7 +60,7 @@ app.post('/login', (req, res) => {
 
         const usuario = results[0];
 
-        // Comparar la contraseña usando bcrypt
+        // comparar contraseña
         bcrypt.compare(clave, usuario.clave, (err, esCorrecto) => {
             if(err) {
                 console.error(err);
@@ -58,7 +68,12 @@ app.post('/login', (req, res) => {
             }
 
             if(esCorrecto){
-                return res.json({ success: true, message: 'Login exitoso' });
+                // Si la contraseña es correcta, devolver éxito
+                return res.json({ 
+                    success: true, 
+                    message: 'Login exitoso',
+                    rol: usuario.rol 
+                });
             } else {
                 return res.json({ success: false, message: 'Contraseña incorrecta' });
             }
@@ -66,36 +81,6 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.get('/panel', (req, res) => {
-    res.send('<h1>Bienvenido al Panel de SmartBee</h1>');
-});
-
-
-
-
-/**
- * 
- * api/nodo_mensajes el cual obtiene los mensajes de los nodos
- * en formato JSON. ejemplo:  {"nodo_id":"NODO-XXXX","temperatura":23.5,"humedad":60.4}
- * @author SmartBee Tea - Sede Rancagua 
- * validado por VRC -> @date 2025-08-16
- * @version 1.0
- * @description Esta ruta obtiene los mensajes de los nodos desde la base de datos cuando implementes coors deben agregar un API KEY 
- * para mayor seguridad.  
- */
-
-app.get('/api/nodo_mensajes' , (req, res) => {
-
-    const query = 'SELECT id, nodo_id , topico, payload, fecha FROM  nodo_mensaje ';
-    oConexion.query(query, (err, results) => {
-        if(err) {
-            console.error(err);
-            return res.status(500).json({ success: false, message: 'Error en la base de datos' });
-        }
-
-        res.json({ success: true, data: results });
-    });
-});
 
 
 
