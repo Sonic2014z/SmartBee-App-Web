@@ -1,51 +1,52 @@
-<div class="container" style="background-color: #fff; border-radius: 15px; padding: 20px;">
-    <table class="highlight responsive-table">
+<div class="bg-white rounded-lg shadow p-6 overflow-x-auto">
+    <table id="usuariosTable" class="min-w-full table-auto border-collapse display">
         <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Rol</th>
-                <th>Acciones</th>
+            <tr class="bg-[#D17A08] text-white">
+                <th class="px-4 py-2 text-left">ID</th>
+                <th class="px-4 py-2 text-left">Nombre</th>
+                <th class="px-4 py-2 text-left">Apellido</th>
+                <th class="px-4 py-2 text-left">Rol</th>
+                <th class="px-4 py-2 text-left">Acciones</th>
             </tr>
         </thead>
 
         <tbody>
             <% usuarios.forEach(usuario=> { %>
-                <tr>
-                    <td>
+                <tr class="border-b">
+                    <td class="px-4 py-2">
                         <%= usuario.id %>
                     </td>
-                    <td>
+                    <td class="px-4 py-2">
                         <%= usuario.nombre %>
                     </td>
-                    <td>
+                    <td class="px-4 py-2">
                         <%= usuario.apellido %>
                     </td>
-                    <td>
-                        <% if (usuario.rol=="API" ) { %>
-                            Apicultor
-                            <% }else{ %>
-                                Administrador
-                                <% } %>
+                    <td class="px-4 py-2">
+                        <%= usuario.rol==="API" ? "Apicultor" : "Administrador" %>
                     </td>
-
-                    <% if (usuario.rol=="API" ) { %>
-                        <td>
-                            <a href="/admin/usuarios/editar/<%= usuario.id %>"
-                                class="waves-effect waves-light btn blue">Editar</a>
-                            <a href="/admin/usuarios/eliminar/<%= usuario.id %>"
-                                class="waves-effect waves-light btn red">Eliminar</a>
-                        </td>
-                        <% }else{ %>
-                            <td>
-                                <a href="/admin/usuarios/editar/<%= usuario.id %>"
-                                    class="waves-effect waves-light btn blue">Editar</a>
-                                <a class="waves-effect waves-light btn red disabled">Eliminar</a>
-                            </td>
-                            <% } %>
+                    <td class="px-4 py-2 flex gap-2">
+                        <a href="/admin/usuarios/editar/<%= usuario.id %>" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded">Editar</a>
+                        <% if (usuario.rol==="API" ) { %>
+                            <a href="/admin/usuarios/eliminar/<%= usuario.id %>" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Eliminar</a>
+                        <% } else { %>
+                                <span class="bg-red-400 text-white px-3 py-1 rounded opacity-50 cursor-not-allowed">Eliminar</span>
+                        <% } %>
+                    </td>
                 </tr>
-                <% }); %>
+            <% }); %>
         </tbody>
     </table>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('#usuariosTable').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            responsive: true
+        })
+    })
+</script>

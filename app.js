@@ -35,6 +35,10 @@ app.get('/admin/usuarios', (req, res) => {
     });
 });
 
+app.get('/admin/nodos', (req, res) => {
+    res.render('admin-nodos', { title: 'Nodos | SmartBee' });
+});
+
 
 app.get('/recuperar', (req, res) => {
     res.render('recuperar');

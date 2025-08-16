@@ -8,82 +8,84 @@
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Materialize CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <!-- Estilos propios -->
-    <link rel="stylesheet" href="/css/estilos.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css">
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.5/css/responsive.dataTables.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.5/js/dataTables.responsive.min.js"></script>
+
+
 
     <style>
         body {
-            background-color: #FEF5E7;
-            font-family: 'Roboto'
-        }
-
-        main {
-            padding: 20px;
-        }
-
-        @media (min-width: 992px) {
-            main {
-                margin-left: 300px;
-            }
-        }
-
-        nav {
-            background-color: #d17a00;
+            font-family: 'Roboto', sans-serif;
         }
     </style>
 </head>
 
-<body>
+<body class="bg-[#FEF5E7]">
 
     <!-- Navbar -->
-    <nav>
-        <div class="nav-wrapper">
-            <a href="/" class="brand-logo center">SmartBee</a>
-            <!-- Botón para abrir sidebar en mobile -->
-            <a href="#" data-target="slide-out" class="sidenav-trigger left">
-                <i class="material-icons">menu</i>
-            </a>
+    <nav class="bg-[#D17A08] fixed w-full z-10">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="/" class="text-white font-bold text-xl">SmartBee</a>
+            <!-- Botón menú móvil -->
+            <button id="btn-menu" class="text-white lg:hidden">
+                <!-- Icono hamburguesa -->
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
         </div>
     </nav>
 
     <!-- Sidebar -->
-    <ul id="slide-out" class="sidenav sidenav-fixed">
-        <li>
-            <div class="user-view">
-                <div class="background"></div>
-                <a><img class="circle" src="/res/imagen-perfil.jpg"></a>
-                <a><span class="white-text name">Administración</span></a>
-            </div>
-        </li>
-        <li><a href="/admin/usuarios" class="white-text"><i class="material-icons white-text">people</i>Usuarios</a>
-        </li>
-        <li><a href="/admin/nodos" class="white-text"><i
-                    class="material-icons white-text">location_searching</i>Nodos</a></li>
-        <li><a href="/admin/config" class="white-text"><i
-                    class="material-icons white-text">settings</i>Configuración</a></li>
-        <li>
-            <div class="divider"></div>
-        </li>
-        <li><a href="/logout" class="white-text"><i class="material-icons white-text">exit_to_app</i>Salir</a></li>
-    </ul>
+    <aside id="sidebar" class="bg-[#D17A08] text-white fixed top-0 left-0 h-full w-64 pt-16 hidden lg:block">
+        <div class="flex flex-col items-center mb-6">
+            <img src="/res/imagen-perfil.jpg" alt="Perfil" class="rounded-full w-20 h-20 mb-2">
+            <span class="font-bold">Administración</span>
+        </div>
+        <nav class="flex flex-col">
+            <a href="/admin/usuarios" class="px-4 py-2 hover:bg-[#c06906] flex items-center"><span
+                    class="material-icons mr-2">people</span>Usuarios</a>
+            <a href="/admin/nodos" class="px-4 py-2 hover:bg-[#c06906] flex items-center"><span
+                    class="material-icons mr-2">location_searching</span>Nodos</a>
+            <a href="/admin/config" class="px-4 py-2 hover:bg-[#c06906] flex items-center"><span
+                    class="material-icons mr-2">settings</span>Configuración</a>
+            <hr class="my-2 border-[#c06906]">
+            <a href="/logout" class="px-4 py-2 hover:bg-[#c06906] flex items-center"><span
+                    class="material-icons mr-2">exit_to_app</span>Salir</a>
+        </nav>
+    </aside>
 
     <!-- Contenido principal -->
-    <main>
-            <%- body %>
+    <main class="lg:ml-64 pt-20 px-4">
+        <%- body %>
     </main>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var elems = document.querySelectorAll('.sidenav');
-            M.Sidenav.init(elems);
+        // Toggle sidebar móvil
+        const btnMenu = document.getElementById('btn-menu');
+        const sidebar = document.getElementById('sidebar');
+        btnMenu.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
         });
     </script>
 </body>
