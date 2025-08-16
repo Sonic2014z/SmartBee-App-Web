@@ -2,92 +2,130 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
     <title>
-        <%= title || "SmartBee Admin" %>
+        <%= title || "SMARTBEE Panel de Control" %>
     </title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Material Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css">
-
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.5/css/responsive.dataTables.min.css">
-
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.js"
         integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/3.0.5/js/dataTables.responsive.min.js"></script>
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css" />
+    <link href="https://cdn.datatables.net/responsive/3.0.5/css/responsive.dataTables.css" rel="stylesheet" integrity="sha384-inDoREwjvy5La3vgUWcIczhlGcfXAt1V1DsIU/yHRTbfL3W/HfMnReyF4xwS7S+x" crossorigin="anonymous">
 
-
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.5/js/dataTables.responsive.js" integrity="sha384-8k6IOYY+txT+t0LBVhTWiRwUFwAiw/1/gVEW0TFry4GApouIxMAO2bQRKODL1DJi" crossorigin="anonymous"></script>
 
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Inter', sans-serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
         }
     </style>
 </head>
 
-<body class="bg-[#FEF5E7]">
+<body class="bg-[#FFF6E8] min-h-screen flex flex-col text-[#7F4F00]">
 
     <!-- Navbar -->
-    <nav class="bg-[#D17A08] fixed w-full z-10">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="/" class="text-white font-bold text-xl">SmartBee</a>
-            <!-- Botón menú móvil -->
-            <button id="btn-menu" class="text-white lg:hidden">
-                <!-- Icono hamburguesa -->
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-        </div>
-    </nav>
+    <header
+        class="bg-[#C97800] flex justify-between items-center px-4 sm:px-6 md:px-8 h-12 text-white text-sm font-semibold select-none relative">
+        <button aria-label="Abrir menú" class="sm:hidden z-30" id="menu-btn" type="button">
+            <i class="fas fa-bars text-lg"></i>
+        </button>
 
-    <!-- Sidebar -->
-    <aside id="sidebar" class="bg-[#D17A08] text-white fixed top-0 left-0 h-full w-64 pt-16 hidden lg:block">
-        <div class="flex flex-col items-center mb-6">
-            <img src="/res/imagen-perfil.jpg" alt="Perfil" class="rounded-full w-20 h-20 mb-2">
-            <span class="font-bold">Administración</span>
+        <div class="hidden sm:flex items-center space-x-1 font-normal">
+            <!-- Aquí puedes agregar botones o links adicionales si quieres -->
         </div>
-        <nav class="flex flex-col">
-            <a href="/admin/usuarios" class="px-4 py-2 hover:bg-[#c06906] flex items-center"><span
-                    class="material-icons mr-2">people</span>Usuarios</a>
-            <a href="/admin/nodos" class="px-4 py-2 hover:bg-[#c06906] flex items-center"><span
-                    class="material-icons mr-2">location_searching</span>Nodos</a>
-            <a href="/admin/config" class="px-4 py-2 hover:bg-[#c06906] flex items-center"><span
-                    class="material-icons mr-2">settings</span>Configuración</a>
-            <hr class="my-2 border-[#c06906]">
-            <a href="/logout" class="px-4 py-2 hover:bg-[#c06906] flex items-center"><span
-                    class="material-icons mr-2">exit_to_app</span>Salir</a>
+
+        <div class="flex items-center space-x-2 font-bold text-sm cursor-default">
+            <span>Administrador</span>
+            <i class="fas fa-user-circle text-lg"></i>
+        </div>
+    </header>
+
+    <div class="flex flex-1 min-h-0 relative">
+
+        <!-- Sidebar -->
+        <nav id="sidebar"
+            class="bg-[#C97800] w-44 flex flex-col text-white text-xs select-none fixed inset-y-0 left-0 transform -translate-x-full sm:translate-x-0 transition-transform duration-300 ease-in-out z-20">
+            <div class="font-bold text-sm px-4 py-3 border-b border-[#B36E00] flex justify-between items-center">
+                <span>SMARTBEE</span>
+                <button aria-label="Cerrar menú" class="sm:hidden text-white" id="menu-close" type="button">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] bg-[#B36E00] font-semibold"
+                href="/">
+                <i class="fas fa-th-large text-xs"></i>
+                <span>Panel Principal</span>
+            </a>
+            <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] hover:bg-[#b36e00]/50"
+                href="admin/usuarios">
+                <i class="fas fa-user"></i>
+                <span>Usuarios</span>
+            </a>
+            <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] hover:bg-[#b36e00]/50" href="admin/nodos">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Nodos</span>
+            </a>
+            <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] hover:bg-[#b36e00]/50"
+                href="/configuracionperfil">
+                <i class="fas fa-cog text-xs"></i>
+                <span>Configuración</span>
+            </a>
+            <div class="divider"></div>
+            <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] hover:bg-[#b36e00]/50" href="/logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
         </nav>
-    </aside>
-
-    <!-- Contenido principal -->
-    <main class="lg:ml-64 pt-20 px-4">
-        <%- body %>
-    </main>
 
 
+        <!-- Contenido principal -->
+        <main class="flex-1 flex flex-col p-6 space-y-6 overflow-auto ml-0 sm:ml-52">
+            <%- body %>
+        </main>
+
+    </div>
+
+    <!-- Scripts -->
     <script>
-        // Toggle sidebar móvil
-        const btnMenu = document.getElementById('btn-menu');
+        const menuBtn = document.getElementById('menu-btn');
+        const menuClose = document.getElementById('menu-close');
         const sidebar = document.getElementById('sidebar');
-        btnMenu.addEventListener('click', () => {
-            sidebar.classList.toggle('hidden');
+
+        menuBtn.addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
+        menuClose.addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
+
+        // Cerrar sidebar al hacer clic fuera en móviles
+        window.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && !menuBtn.contains(e.target) && window.innerWidth < 640) {
+                sidebar.classList.add('-translate-x-full');
+            }
         });
     </script>
+
 </body>
 
 </html>

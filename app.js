@@ -21,7 +21,7 @@ app.use(express.json());
 
 // Rutas principales
 app.get('/', (req, res) => {
-    res.render('admin', { title: 'Panel de Administración | SmartBee' });
+    res.render('admin', { title: 'Panel Principal | SmartBee' });
 });
 
 app.get('/admin/usuarios', (req, res) => {
