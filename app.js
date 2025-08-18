@@ -1,14 +1,11 @@
 const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
-const mysql = require("mysql");
+const oMySQL = require("mysql");
 const app = express();
 const expressLayouts = require('express-ejs-layouts');
-const session = require('express-session');
-const bcrypt = require('bcrypt');
 const port = 3000;
 
-const oMySQL = require("mysql");
 const oConexion = oMySQL.createConnection({
     host: "localhost",
     database: "smartbee",
