@@ -19,6 +19,6 @@ La creación de esta aplicación web tiene como propósito visualizar datos impo
 - Supervisión global de la información recolectada por todos los nodos.
 
 ## Tecnologías a utilizar
-- **Frontend**: EJS, HTML, CSS, MaterializeCSS.
+- **Frontend**: EJS, HTML, CSS, TailwindCSS.
 - **Backend**: Node.js con Express.
 - **Base de datos**: MySQL.

@@ -1,0 +1,70 @@
+<div class="bg-white rounded-lg shadow p-6 overflow-x-auto">
+    <table id="usuariosTable" class="min-w-full table-auto border-collapse display">
+        <thead>
+            <tr class="bg-[#D17A08] text-white">
+                <th class="px-4 py-2 text-left">ID</th>
+                <th class="px-4 py-2 text-left">Nombre</th>
+                <th class="px-4 py-2 text-left">Apellido</th>
+                <th class="px-4 py-2 text-left">Rol</th>
+                <th class="px-4 py-2 text-left">Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% usuarios.forEach(usuario=> { %>
+                <tr class="border-b">
+                    <td class="px-4 py-2"><%= usuario.id %></td>
+                    <td class="px-4 py-2"><%= usuario.nombre %></td>
+                    <td class="px-4 py-2"><%= usuario.apellido %></td>
+                    <td class="px-4 py-2">
+                        <%= usuario.rol==="API" ? "Apicultor" : "Administrador" %>
+                    </td>
+                    <td class="px-4 py-2 flex gap-2">
+                        <a href="/admin/usuarios/editar/<%= usuario.id %>" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded">Editar</a>
+                        <% if (usuario.rol==="API" ) { %>
+                            <a href="/admin/usuarios/eliminar/<%= usuario.id %>" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Eliminar</a>
+                        <% } else { %>
+                            <span class="bg-red-400 text-white px-3 py-1 rounded opacity-50 cursor-not-allowed">Eliminar</span>
+                        <% } %>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#usuariosTable').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            responsive: true,
+            language: {
+                "decimal": "",
+                "emptyTable": "No hay datos disponibles en la tabla",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "infoEmpty": "Mostrando 0 a 0 de 0 registros",
+                "infoFiltered": "(filtrado de _MAX_ registros totales)",
+                "infoPostFix": "",
+                "thousands": ",",
+                "lengthMenu": "Mostrar _MENU_ registros",
+                "loadingRecords": "Cargando...",
+                "processing": "Procesando...",
+                "search": "Buscar:",
+                "zeroRecords": "No se encontraron registros coincidentes",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Último",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                },
+                "aria": {
+                    "sortAscending": ": activar para ordenar la columna ascendente",
+                    "sortDescending": ": activar para ordenar la columna descendente"
+                }
+            }
+        })
+    })
+</script>

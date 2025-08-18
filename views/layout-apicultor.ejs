@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title><%= title || "SMARTBEE Panel de Control" %></title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- Favicon  -->
+<link rel="icon" href="/res/SmartBee Transparent.png" type="image/png" sizes="32x32">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+  </style>
+</head>
+
+<body class="bg-[#FFF6E8] min-h-screen flex flex-col text-[#7F4F00]">
+
+  <!-- Navbar -->
+  <header class="bg-[#C97800] flex justify-between items-center px-4 sm:px-6 md:px-8 h-12 text-white text-sm font-semibold select-none relative">
+    <button aria-label="Abrir menú" class="sm:hidden z-30" id="menu-btn" type="button">
+      <i class="fas fa-bars text-lg"></i>
+    </button>
+
+    <div class="hidden sm:flex items-center space-x-1 font-normal">
+      <!-- Aquí puedes agregar botones o links adicionales si quieres -->
+    </div>
+
+    <div class="flex items-center space-x-2 font-bold text-sm cursor-default">
+      <span>Apicultor</span>
+      <i class="fas fa-user-circle text-lg"></i>
+    </div>
+  </header>
+
+  <div class="flex flex-1 min-h-0 relative">
+
+    <!-- Sidebar -->
+    <nav id="sidebar"
+      class="bg-[#C97800] w-44 flex flex-col text-white text-xs select-none fixed inset-y-0 left-0 transform -translate-x-full sm:translate-x-0 transition-transform duration-300 ease-in-out z-20">
+      <div class="font-bold text-sm px-4 py-3 border-b border-[#B36E00] flex justify-between items-center">
+        <span>SMARTBEE</span>
+        <button aria-label="Cerrar menú" class="sm:hidden text-white" id="menu-close" type="button">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] bg-[#B36E00] font-semibold" href="/panelapicultor">
+        <i class="fas fa-th-large text-xs"></i>
+        <span>Panel de Control</span>
+      </a>
+      <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] hover:bg-[#b36e00]/50" href="#">
+        <i class="fas fa-chart-bar text-xs"></i>
+        <span>Vista Histórica</span>
+      </a>
+      <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] hover:bg-[#b36e00]/50" href="#">
+        <i class="fas fa-exclamation-triangle text-xs"></i>
+        <span>Alertas</span>
+      </a>
+      <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] hover:bg-[#b36e00]/50" href="/configuracionperfil">
+        <i class="fas fa-cog text-xs"></i>
+        <span>Configuración</span>
+      </a>
+      <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] hover:bg-[#b36e00]/50" href="/logout">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Cerrar Sesión</span>
+      </a>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="flex-1 flex flex-col p-6 space-y-6 overflow-auto ml-0 sm:ml-52">
+      <%- body %>
+    </main>
+
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    const menuBtn = document.getElementById('menu-btn');
+    const menuClose = document.getElementById('menu-close');
+    const sidebar = document.getElementById('sidebar');
+
+    menuBtn.addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
+    menuClose.addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
+
+    // Cerrar sidebar al hacer clic fuera en móviles
+    window.addEventListener('click', (e) => {
+      if (!sidebar.contains(e.target) && !menuBtn.contains(e.target) && window.innerWidth < 640) {
+        sidebar.classList.add('-translate-x-full');
+      }
+    });
+  </script>
+
+</body>
+
+</html>

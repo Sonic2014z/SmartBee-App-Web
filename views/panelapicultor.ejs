@@ -1,279 +1,123 @@
-<html lang="es">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <title>
-   SMARTBEE Panel de Control
-  </title>
-  <script src="https://cdn.tailwindcss.com">
-  </script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
-  <style>
-   body {
-      font-family: 'Inter', sans-serif;
-    }
-    /* Custom scrollbar for sidebar if needed */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background-color: rgba(255, 255, 255, 0.2);
-      border-radius: 3px;
-    }
-  </style>
- </head>
- <body class="bg-[#FFF6E8] min-h-screen flex flex-col text-[#7F4F00]">
-  <header class="bg-[#C97800] flex justify-between items-center px-4 sm:px-6 md:px-8 h-12 text-white text-sm font-semibold select-none relative">
-   <button aria-label="Abrir menú" class="sm:hidden z-30" id="menu-btn" type="button">
-    <i class="fas fa-bars text-lg">
-    </i>
-   </button>
-   <div class="hidden sm:flex items-center space-x-1 font-normal">
-  
-   
-   </div>
-   <div class="flex items-center space-x-2 font-bold text-sm cursor-default">
-    <span>
-     Apicultor
-    </span>
-    <i class="fas fa-user-circle text-lg">
-    </i>
-   </div>
-  </header>
-  <div class="flex flex-1 min-h-0 relative">
-   <nav class="bg-[#C97800] w-44 flex flex-col text-white text-xs select-none fixed inset-y-0 left-0 transform -translate-x-full sm:translate-x-0 transition-transform duration-300 ease-in-out z-20" id="sidebar">
-    <div class="font-bold text-sm px-4 py-3 border-b border-[#B36E00] flex justify-between items-center">
-     <span>
-      SMARTBEE
-     </span>
-     <button aria-label="Cerrar menú" class="sm:hidden text-white" id="menu-close" type="button">
-      <i class="fas fa-times">
-      </i>
-     </button>
-    </div>
-    <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] bg-[#B36E00] font-semibold" href="/panelcontrol">
-     <i class="fas fa-th-large text-xs">
-     </i>
-     <span>
-      Panel de Control
-     </span>
-    </a>
-    <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] hover:bg-[#b36e00]/50" href="#">
-     <i class="fas fa-chart-bar text-xs">
-     </i>
-     <span>
-      Vista Histórica
-     </span>
-    </a>
-    <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] hover:bg-[#b36e00]/50" href="#">
-     <i class="fas fa-exclamation-triangle text-xs">
-     </i>
-     <span>
-      Alertas
-     </span>
-    </a>
-    <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] hover:bg-[#b36e00]/50" href="/configuracionperfil">
-     <i class="fas fa-cog text-xs">
-     </i>
-     <span>
-      Configuración
-     </span>
-    </a>
-   </nav>
-   <main class="flex-1 flex flex-col p-6 space-y-6 overflow-auto ml-0 sm:ml-52">
-    <div>
-     <h1 class="text-[#8b3e00] font-bold text-lg leading-tight">
-      Panel de control
-     </h1>
-     <p class="text-[#8b3e00] text-xs mt-1">
-      Monitoreo en tiempo real
-     </p>
-    </div>
-    <div class="flex flex-col md:flex-row gap-4">
-     <div class="flex items-center gap-2 border border-[#d32f2f] rounded-md p-3 bg-[#ffe0e0] shadow-md max-w-md w-full md:w-auto" style="border-width: 2px;">
-      <i class="fas fa-exclamation-triangle text-[#d32f2f] text-xl">
-      </i>
-      <div class="text-[#d32f2f] text-xs font-semibold leading-tight">
-       <p>
-        Alerta
-       </p>
-       <p class="font-bold">
+<div>
+  <h1 class="text-[#8b3e00] font-bold text-lg leading-tight">
+    Panel de control
+  </h1>
+  <p class="text-[#8b3e00] text-xs mt-1">
+    Monitoreo en tiempo real
+  </p>
+</div>
+<div class="flex flex-col md:flex-row gap-4">
+  <div class="flex items-center gap-2 border border-[#d32f2f] rounded-md p-3 bg-[#ffe0e0] shadow-md max-w-md w-full md:w-auto" style="border-width: 2px;">
+    <i class="fas fa-exclamation-triangle text-[#d32f2f] text-xl"></i>
+    <div class="text-[#d32f2f] text-xs font-semibold leading-tight">
+      <p>Alerta</p>
+      <p class="font-bold">
         Nivel de humedad crítico
         <br/>
         en Colmena norte
-        <span class="font-normal">
-         (35%)
-        </span>
-       </p>
-      </div>
-     </div>
-     <div class="flex items-center gap-2 border border-[#2a8af2] rounded-md p-3 bg-[#c6d9ff] shadow-md max-w-md w-full md:w-auto" style="border-width: 2px">
-      <i class="fas fa-info-circle text-[#2a58c6] text-xl">
-      </i>
-      <div class="text-[#2a58c6] text-xs font-semibold leading-tight">
-       <p>
-        Notificación
-       </p>
-       <p class="font-bold">
+        <span class="font-normal">(35%)</span>
+      </p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2 border border-[#2a8af2] rounded-md p-3 bg-[#c6d9ff] shadow-md max-w-md w-full md:w-auto" style="border-width: 2px">
+    <i class="fas fa-info-circle text-[#2a58c6] text-xl"></i>
+    <div class="text-[#2a58c6] text-xs font-semibold leading-tight">
+      <p>Notificación</p>
+      <p class="font-bold">
         Tareas pendientes: Revisión
         <br/>
         programada para mañana
-       </p>
-      </div>
-     </div>
+      </p>
     </div>
-    <section class="border border-[#2a8af2] rounded-md p-4 bg-white shadow max-w-4xl w-full relative" style="border-width: 2px">
-     <div class="flex justify-between items-start">
-      <div class="flex items-center gap-2 text-[#2a8af2]">
-       <i class="fas fa-tint text-xl">
-       </i>
-       <h2 class="font-semibold text-sm text-black">
-        Humedad
-       </h2>
-      </div>
-      <div>
-       <span class="text-[#f4b96f] text-[10px] font-semibold bg-[#fce9c7] rounded-full px-2 py-[2px] select-none">
-        Colmena X
-       </span>
-      </div>
-     </div>
-     <div class="mt-3 flex flex-col sm:flex-row sm:justify-between sm:items-center">
-      <div>
-       <p class="font-bold text-2xl text-black leading-none">
-        47%
-       </p>
-       <p class="text-xs text-gray-600 mt-1">
-        Mín: 35%
-       </p>
-       <span class="inline-block mt-2 bg-[#2aa44f] text-white text-xs font-semibold rounded px-2 py-0.5 select-none">
-        Normal
-       </span>
-      </div>
-      <div class="text-right mt-4 sm:mt-0 text-gray-600 text-xs max-w-xs">
-       <div class="flex justify-end gap-4">
-        <span>
-         Óptimo: 50-60%
-        </span>
-        <span>
-         Máx: 70%
-        </span>
-       </div>
-       <p class="text-[#2a58c6] font-semibold text-xs mt-1 select-text">
-        +3% desde ayer
-       </p>
-      </div>
-     </div>
-    </section>
-    <section class="border border-[#2aa44f] rounded-md p-4 bg-white shadow max-w-4xl w-full relative" style="border-width: 2px">
-     <div class="flex justify-between items-start">
-      <div class="flex items-center gap-2 text-[#2aa44f]">
-       <i class="fas fa-weight text-xl">
-       </i>
-       <h2 class="font-semibold text-sm text-black">
-        Peso
-       </h2>
-      </div>
-      <div>
-       <span class="text-[#7ed9b1] text-[10px] font-semibold bg-[#d9f1e7] rounded-full px-2 py-[2px] select-none">
-        Colmena X
-       </span>
-      </div>
-     </div>
-     <div class="mt-3 flex flex-col sm:flex-row sm:justify-between sm:items-center">
-      <div>
-       <p class="font-bold text-2xl text-black leading-none">
-        24
-        <span class="text-base font-normal">
-         kg
-        </span>
-       </p>
-       <p class="text-xs text-gray-600 mt-1">
-        Mín: 18kg
-       </p>
-      </div>
-      <div class="text-right mt-4 sm:mt-0 text-gray-600 text-xs max-w-xs">
-       <p>
-        Producción estimada
-       </p>
-       <p class="font-bold text-[#2aa44f] text-sm select-text">
-        7.2 kg miel
-       </p>
-       <p>
-        Aumento semanal +1.4kg
-       </p>
-       <p class="font-bold text-[#2aa44f] text-xs select-text">
-        +65% capacidad
-       </p>
-      </div>
-     </div>
-    </section>
-    <section class="border border-[#d32f2f] rounded-md p-4 bg-white shadow max-w-4xl w-full relative" style="border-width: 2px">
-     <div class="flex justify-between items-start">
-      <div class="flex items-center gap-2 text-[#d32f2f]">
-       <i class="fas fa-thermometer-half text-xl">
-       </i>
-       <h2 class="font-semibold text-sm text-black">
-        Temperatura
-       </h2>
-      </div>
-      <div>
-       <span class="text-[#dca6a6] text-[10px] font-semibold bg-[#f9d7d7] rounded-full px-2 py-[2px] select-none">
-        Colmena X
-       </span>
-      </div>
-     </div>
-     <div class="mt-3 flex flex-col sm:flex-row sm:justify-between sm:items-center">
-      <div>
-       <p class="font-bold text-2xl text-black leading-none">
-        28
-        <span class="text-base font-normal">
-         °C
-        </span>
-       </p>
-       <p class="text-xs text-gray-600 mt-1">
-        Mín: 24°C
-       </p>
-       <span class="inline-block mt-2 bg-[#2aa44f] text-white text-xs font-semibold rounded px-2 py-0.5 select-none">
-        Ideal
-       </span>
-      </div>
-      <div class="text-right mt-4 sm:mt-0 text-gray-600 text-xs max-w-xs">
-       <div class="flex justify-end gap-4">
-        <span>
-         Óptimo: 26-32°C
-        </span>
-        <span>
-         Máx: 35°C
-        </span>
-       </div>
-       <p class="text-[#d32f2f] font-semibold text-xs mt-1 select-text">
-        -2°C desde ayer
-       </p>
-      </div>
-     </div>
-    </section>
-   </main>
   </div>
-  <script>
-   const menuBtn = document.getElementById('menu-btn');
-   const menuClose = document.getElementById('menu-close');
-   const sidebar = document.getElementById('sidebar');
-
-   menuBtn.addEventListener('click', () => {
-     sidebar.classList.remove('-translate-x-full');
-   });
-
-   menuClose.addEventListener('click', () => {
-     sidebar.classList.add('-translate-x-full');
-   });
-
-   // Optional: close sidebar when clicking outside on mobile
-   window.addEventListener('click', (e) => {
-     if (!sidebar.contains(e.target) && !menuBtn.contains(e.target) && window.innerWidth < 640) {
-       sidebar.classList.add('-translate-x-full');
-     }
-   });
-  </script>
- </body>
-</html>
+</div>
+<section class="border border-[#2a8af2] rounded-md p-4 bg-white shadow max-w-4xl w-full relative" style="border-width: 2px">
+  <div class="flex justify-between items-start">
+    <div class="flex items-center gap-2 text-[#2a8af2]">
+      <i class="fas fa-tint text-xl"></i>
+      <h2 class="font-semibold text-sm text-black">Humedad</h2>
+    </div>
+    <div>
+      <span class="text-[#f4b96f] text-[10px] font-semibold bg-[#fce9c7] rounded-full px-2 py-[2px] select-none">
+        Colmena X
+      </span>
+    </div>
+  </div>
+  <div class="mt-3 flex flex-col sm:flex-row sm:justify-between sm:items-center">
+    <div>
+      <p class="font-bold text-2xl text-black leading-none">47%</p>
+      <p class="text-xs text-gray-600 mt-1">Mín: 35%</p>
+      <span class="inline-block mt-2 bg-[#2aa44f] text-white text-xs font-semibold rounded px-2 py-0.5 select-none">
+        Normal
+      </span>
+    </div>
+    <div class="text-right mt-4 sm:mt-0 text-gray-600 text-xs max-w-xs">
+      <div class="flex justify-end gap-4">
+        <span>Óptimo: 50-60%</span>
+        <span>Máx: 70%</span>
+      </div>
+      <p class="text-[#2a58c6] font-semibold text-xs mt-1 select-text">
+        +3% desde ayer
+      </p>
+    </div>
+  </div>
+</section>
+<section class="border border-[#2aa44f] rounded-md p-4 bg-white shadow max-w-4xl w-full relative" style="border-width: 2px">
+  <div class="flex justify-between items-start">
+    <div class="flex items-center gap-2 text-[#2aa44f]">
+      <i class="fas fa-weight text-xl"></i>
+      <h2 class="font-semibold text-sm text-black">Peso</h2>
+    </div>
+    <div>
+      <span class="text-[#7ed9b1] text-[10px] font-semibold bg-[#d9f1e7] rounded-full px-2 py-[2px] select-none">
+        Colmena X
+      </span>
+    </div>
+  </div>
+  <div class="mt-3 flex flex-col sm:flex-row sm:justify-between sm:items-center">
+    <div>
+      <p class="font-bold text-2xl text-black leading-none">
+        24
+        <span class="text-base font-normal">kg</span>
+      </p>
+      <p class="text-xs text-gray-600 mt-1">Mín: 18kg</p>
+    </div>
+    <div class="text-right mt-4 sm:mt-0 text-gray-600 text-xs max-w-xs">
+      <p>Producción estimada</p>
+      <p class="font-bold text-[#2aa44f] text-sm select-text">7.2 kg miel</p>
+      <p>Aumento semanal +1.4kg</p>
+      <p class="font-bold text-[#2aa44f] text-xs select-text">+65% capacidad</p>
+    </div>
+  </div>
+</section>
+<section class="border border-[#d32f2f] rounded-md p-4 bg-white shadow max-w-4xl w-full relative" style="border-width: 2px">
+  <div class="flex justify-between items-start">
+    <div class="flex items-center gap-2 text-[#d32f2f]">
+      <i class="fas fa-thermometer-half text-xl"></i>
+      <h2 class="font-semibold text-sm text-black">Temperatura</h2>
+    </div>
+    <div>
+      <span class="text-[#dca6a6] text-[10px] font-semibold bg-[#f9d7d7] rounded-full px-2 py-[2px] select-none">
+        Colmena X
+      </span>
+    </div>
+  </div>
+  <div class="mt-3 flex flex-col sm:flex-row sm:justify-between sm:items-center">
+    <div>
+      <p class="font-bold text-2xl text-black leading-none">
+        28
+        <span class="text-base font-normal">°C</span>
+      </p>
+      <p class="text-xs text-gray-600 mt-1">Mín: 24°C</p>
+      <span class="inline-block mt-2 bg-[#2aa44f] text-white text-xs font-semibold rounded px-2 py-0.5 select-none">
+        Ideal
+      </span>
+    </div>
+    <div class="text-right mt-4 sm:mt-0 text-gray-600 text-xs max-w-xs">
+      <div class="flex justify-end gap-4">
+        <span>Óptimo: 26-32°C</span>
+        <span>Máx: 35°C</span>
+      </div>
+      <p class="text-[#d32f2f] font-semibold text-xs mt-1 select-text">
+        -2°C desde ayer
+      </p>
