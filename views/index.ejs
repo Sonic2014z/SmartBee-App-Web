@@ -85,18 +85,16 @@
       const form = document.getElementById('loginForm');
 
       form.addEventListener('submit', function (e) {
-        e.preventDefault(); // Evita que recargue la página
+        e.preventDefault();
 
         const identificador = document.getElementById('identificador').value.trim();
-        const clave = document.getElementById('clave').value.trim(); // CORRECCIÓN
+        const clave = document.getElementById('clave').value.trim();
 
-        // Validación simple
         if (identificador === "" || clave === "") {
           M.toast({ html: 'Por favor ingresa identificador y clave', classes: 'red' });
           return;
         }
 
-        // Enviar datos al backend usando fetch
         fetch('/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -106,7 +104,16 @@
           .then(data => {
             if (data.success) {
               M.toast({ html: 'Login exitoso', classes: 'green' });
-              window.location.href = "/panel";
+
+              
+              if (data.rol === "API") {
+                window.location.href = "/panelapicultor";
+              } else if (data.rol === "ADM") {
+                window.location.href = "/paneladministrador";
+              } else {
+                M.toast({ html: 'Rol no reconocido', classes: 'orange' });
+              }
+
             } else {
               M.toast({ html: data.message, classes: 'red' });
             }
@@ -117,8 +124,8 @@
           });
       });
     });
-
   </script>
+
 
 </body>
 

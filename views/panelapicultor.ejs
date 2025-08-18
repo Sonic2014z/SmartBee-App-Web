@@ -1,3 +1,123 @@
 <div>
-  Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto sint est autem nisi atque! Doloremque, id illo! Porro inventore impedit nihil illo, consectetur aliquam culpa. Nostrum saepe culpa, doloribus nulla iusto facere!
+  <h1 class="text-[#8b3e00] font-bold text-lg leading-tight">
+    Panel de control
+  </h1>
+  <p class="text-[#8b3e00] text-xs mt-1">
+    Monitoreo en tiempo real
+  </p>
 </div>
+<div class="flex flex-col md:flex-row gap-4">
+  <div class="flex items-center gap-2 border border-[#d32f2f] rounded-md p-3 bg-[#ffe0e0] shadow-md max-w-md w-full md:w-auto" style="border-width: 2px;">
+    <i class="fas fa-exclamation-triangle text-[#d32f2f] text-xl"></i>
+    <div class="text-[#d32f2f] text-xs font-semibold leading-tight">
+      <p>Alerta</p>
+      <p class="font-bold">
+        Nivel de humedad crítico
+        <br/>
+        en Colmena norte
+        <span class="font-normal">(35%)</span>
+      </p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2 border border-[#2a8af2] rounded-md p-3 bg-[#c6d9ff] shadow-md max-w-md w-full md:w-auto" style="border-width: 2px">
+    <i class="fas fa-info-circle text-[#2a58c6] text-xl"></i>
+    <div class="text-[#2a58c6] text-xs font-semibold leading-tight">
+      <p>Notificación</p>
+      <p class="font-bold">
+        Tareas pendientes: Revisión
+        <br/>
+        programada para mañana
+      </p>
+    </div>
+  </div>
+</div>
+<section class="border border-[#2a8af2] rounded-md p-4 bg-white shadow max-w-4xl w-full relative" style="border-width: 2px">
+  <div class="flex justify-between items-start">
+    <div class="flex items-center gap-2 text-[#2a8af2]">
+      <i class="fas fa-tint text-xl"></i>
+      <h2 class="font-semibold text-sm text-black">Humedad</h2>
+    </div>
+    <div>
+      <span class="text-[#f4b96f] text-[10px] font-semibold bg-[#fce9c7] rounded-full px-2 py-[2px] select-none">
+        Colmena X
+      </span>
+    </div>
+  </div>
+  <div class="mt-3 flex flex-col sm:flex-row sm:justify-between sm:items-center">
+    <div>
+      <p class="font-bold text-2xl text-black leading-none">47%</p>
+      <p class="text-xs text-gray-600 mt-1">Mín: 35%</p>
+      <span class="inline-block mt-2 bg-[#2aa44f] text-white text-xs font-semibold rounded px-2 py-0.5 select-none">
+        Normal
+      </span>
+    </div>
+    <div class="text-right mt-4 sm:mt-0 text-gray-600 text-xs max-w-xs">
+      <div class="flex justify-end gap-4">
+        <span>Óptimo: 50-60%</span>
+        <span>Máx: 70%</span>
+      </div>
+      <p class="text-[#2a58c6] font-semibold text-xs mt-1 select-text">
+        +3% desde ayer
+      </p>
+    </div>
+  </div>
+</section>
+<section class="border border-[#2aa44f] rounded-md p-4 bg-white shadow max-w-4xl w-full relative" style="border-width: 2px">
+  <div class="flex justify-between items-start">
+    <div class="flex items-center gap-2 text-[#2aa44f]">
+      <i class="fas fa-weight text-xl"></i>
+      <h2 class="font-semibold text-sm text-black">Peso</h2>
+    </div>
+    <div>
+      <span class="text-[#7ed9b1] text-[10px] font-semibold bg-[#d9f1e7] rounded-full px-2 py-[2px] select-none">
+        Colmena X
+      </span>
+    </div>
+  </div>
+  <div class="mt-3 flex flex-col sm:flex-row sm:justify-between sm:items-center">
+    <div>
+      <p class="font-bold text-2xl text-black leading-none">
+        24
+        <span class="text-base font-normal">kg</span>
+      </p>
+      <p class="text-xs text-gray-600 mt-1">Mín: 18kg</p>
+    </div>
+    <div class="text-right mt-4 sm:mt-0 text-gray-600 text-xs max-w-xs">
+      <p>Producción estimada</p>
+      <p class="font-bold text-[#2aa44f] text-sm select-text">7.2 kg miel</p>
+      <p>Aumento semanal +1.4kg</p>
+      <p class="font-bold text-[#2aa44f] text-xs select-text">+65% capacidad</p>
+    </div>
+  </div>
+</section>
+<section class="border border-[#d32f2f] rounded-md p-4 bg-white shadow max-w-4xl w-full relative" style="border-width: 2px">
+  <div class="flex justify-between items-start">
+    <div class="flex items-center gap-2 text-[#d32f2f]">
+      <i class="fas fa-thermometer-half text-xl"></i>
+      <h2 class="font-semibold text-sm text-black">Temperatura</h2>
+    </div>
+    <div>
+      <span class="text-[#dca6a6] text-[10px] font-semibold bg-[#f9d7d7] rounded-full px-2 py-[2px] select-none">
+        Colmena X
+      </span>
+    </div>
+  </div>
+  <div class="mt-3 flex flex-col sm:flex-row sm:justify-between sm:items-center">
+    <div>
+      <p class="font-bold text-2xl text-black leading-none">
+        28
+        <span class="text-base font-normal">°C</span>
+      </p>
+      <p class="text-xs text-gray-600 mt-1">Mín: 24°C</p>
+      <span class="inline-block mt-2 bg-[#2aa44f] text-white text-xs font-semibold rounded px-2 py-0.5 select-none">
+        Ideal
+      </span>
+    </div>
+    <div class="text-right mt-4 sm:mt-0 text-gray-600 text-xs max-w-xs">
+      <div class="flex justify-end gap-4">
+        <span>Óptimo: 26-32°C</span>
+        <span>Máx: 35°C</span>
+      </div>
+      <p class="text-[#d32f2f] font-semibold text-xs mt-1 select-text">
+        -2°C desde ayer
+      </p>

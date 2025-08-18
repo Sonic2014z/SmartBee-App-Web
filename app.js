@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const expressLayouts = require('express-ejs-layouts');
+const session = require('express-session');
+const bcrypt = require('bcrypt');
 const port = 3000;
 
 const oMySQL = require("mysql");
@@ -18,10 +20,25 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Configuración de sesiones
+app.use(session({
+    secret: 'smartbee_secret_key',
+    resave: false,
+    saveUninitialized: true
+}));
 
 // Rutas principales
 app.get('/', (req, res) => {
-    res.render('admin', { title: 'Panel Principal | SmartBee' });
+    // Si hay sesión y rol, redirige al panel correspondiente
+    if (req.session.userId && req.session.rol) {
+        if (req.session.rol === 'admin') {
+            return res.redirect('/paneladministrador');
+        } else {
+            return res.redirect('/panelapicultor');
+        }
+    }
+    // Tomar en consideración este ejemplo para la utilización de layouts ("layout: false" equivale a no tener layout).
+    res.render('index', { layout: false, title: 'Panel Principal | SmartBee' });
 });
 
 app.get('/admin/usuarios', (req, res) => {
@@ -31,25 +48,40 @@ app.get('/admin/usuarios', (req, res) => {
             console.error(err);
             return res.status(500).send("Error al obtener usuarios: " + err.message);
         }
-        res.render('admin-usuarios', { usuarios: filas, title: "Usuarios | SmartBee" });
+        // Aqui el layout para la vista de admin es "layout".
+        res.render('admin-usuarios', { usuarios: filas, layout: "layout", title: "Usuarios | SmartBee" });
     });
 });
 
 app.get('/admin/nodos', (req, res) => {
-    res.render('admin-nodos', { title: 'Nodos | SmartBee' });
+    res.render('admin-nodos', { layout: "layout", title: 'Nodos | SmartBee' });
 });
 
-
 app.get('/recuperar', (req, res) => {
-    res.render('recuperar');
+    res.render('recuperar', { layout: false });
 });
 
 app.get('/restablecer', (req, res) => {
-    res.render('restablecer');
+    res.render('restablecer', {layout: false });
 });
-// Ruta para procesar login
-const bcrypt = require('bcrypt');
 
+app.get('/panelapicultor', (req, res) => {
+    // Para la vista de apicultor el layout es: "layout-apicultor"
+    res.render('panelapicultor', { layout: "layout-apicultor", title: "Panel Principal | SmartBee"});
+});
+
+app.get('/paneladministrador', (req, res) => {
+    res.render('admin', { title: "Panel Principal | SmartBee "});
+});
+
+app.get('/configuracionperfil', (req, res) => {
+    if (!req.session.userId) {
+        return res.redirect('/'); // si no hay sesión vuelve al login
+    }
+    res.render('configuracionperfil', { layout: "layout-apicultor", title: "Configuración | SmartBee"});
+});
+
+// Ruta para procesar login
 app.post('/login', (req, res) => {
     const { identificador, clave } = req.body;
 
@@ -78,7 +110,15 @@ app.post('/login', (req, res) => {
             }
 
             if (esCorrecto) {
-                return res.json({ success: true, message: 'Login exitoso' });
+                // Guardar sesión
+                req.session.userId = usuario.id;
+                req.session.rol = usuario.rol;
+
+                return res.json({
+                    success: true,
+                    message: 'Login exitoso',
+                    rol: usuario.rol
+                });
             } else {
                 return res.json({ success: false, message: 'Contraseña incorrecta' });
             }
@@ -86,10 +126,29 @@ app.post('/login', (req, res) => {
     });
 });
 
+// API para obtener datos del usuario logueado
+app.get('/api/usuario', (req, res) => {
+    if (!req.session.userId) {
+        return res.status(401).json({ success: false, message: 'No hay usuario logueado' });
+    }
+
+    const query = 'SELECT id, nombre, apellido, comuna, rol, activo FROM usuario WHERE id = ? LIMIT 1';
+    oConexion.query(query, [req.session.userId], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ success: false, message: 'Error en DB' });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+        }
+
+        res.json(results[0]);
+    });
+});
+
 app.get('/panel', (req, res) => {
     res.send('<h1>Bienvenido al Panel de SmartBee</h1>');
 });
-
 
 app.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}`);
