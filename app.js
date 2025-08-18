@@ -16,6 +16,18 @@ const oConexion = oMySQL.createConnection({
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.set('layout', 'layout');
+
+    // Middleware para requerir login en rutas privadas
+    // Si el usuario no tiene sesión, lo redirige al login
+    function requireLogin(req, res, next) {
+        if (!req.session.userId) {
+            // Comentario: Si no hay sesión, redirige a la página principal (login)
+            return res.redirect('/');
+        }
+        next();
+    }
+
+
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -65,19 +77,22 @@ app.get('/restablecer', (req, res) => {
     res.render('restablecer', {layout: false });
 });
 
-app.get('/panelapicultor', (req, res) => {
+
+// Protegido con requireLogin para evitar acceso sin sesión
+app.get('/panelapicultor', requireLogin, (req, res) => {
     // Para la vista de apicultor el layout es: "layout-apicultor"
     res.render('panelapicultor', { layout: "layout-apicultor", title: "Panel Principal | SmartBee"});
 });
 
-app.get('/paneladministrador', (req, res) => {
+
+// Protegido con requireLogin para evitar acceso sin sesión
+app.get('/paneladministrador', requireLogin, (req, res) => {
     res.render('admin', { title: "Panel Principal | SmartBee "});
 });
 
-app.get('/configuracionperfil', (req, res) => {
-    if (!req.session.userId) {
-        return res.redirect('/'); // si no hay sesión vuelve al login
-    }
+
+// Protegido con requireLogin para evitar acceso sin sesión
+app.get('/configuracionperfil', requireLogin, (req, res) => {
     res.render('configuracionperfil', { layout: "layout-apicultor", title: "Configuración | SmartBee"});
 });
 
