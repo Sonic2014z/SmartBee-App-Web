@@ -17,15 +17,15 @@ app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.set('layout', 'layout');
 
-// Middleware para requerir login en rutas privadas
-// Si el usuario no tiene sesión, lo redirige al login
-function requireLogin(req, res, next) {
-    if (!req.session.userId) {
-        // Comentario: Si no hay sesión, redirige a la página principal (login)
-        return res.redirect('/');
+    // Middleware para requerir login en rutas privadas
+    // Si el usuario no tiene sesión, lo redirige al login
+    function requireLogin(req, res, next) {
+        if (!req.session.userId) {
+            // Comentario: Si no hay sesión, redirige a la página principal (login)
+            return res.redirect('/');
+        }
+        next();
     }
-    next();
-}
 
 
 app.use(express.static('public'));
@@ -263,6 +263,117 @@ app.get('/panel', (req, res) => {
 });
 
 
+/**
+ * 
+ * @description ruta para registrar un nuevo usuario (vista)
+ */
+
+app.get('/admin/usuarios/nuevo', (req, res) => {
+res.render('admin-nuevos-usuarios', { title: "Registro usuarios| SmartBee" });
+});
+
+
+/**
+ * 
+ * @description ruta para registrar un nuevo usuario (backend)
+ */
+
+app.post('/admin/usuarios/registrar', (req, res) => {
+    const { apellidos, estado, nombres, rol, id, comuna } = req.body;
+    const clave = req.body.id; // clave = mismo id
+
+    if (!apellidos || !estado || !nombres || !rol || !id || !clave || !comuna) {
+        return res.status(400).json({ success: false, message: 'Todos los campos son obligatorios' });
+    }
+
+    // Encriptar la clave antes de guardarla
+    bcrypt.hash(clave, 10, (err, hashedPassword) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ success: false, message: 'Error al encriptar la clave' });
+        }
+
+        const sql = 'INSERT INTO usuario (id, nombre, apellido, comuna, rol, activo, clave) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        oConexion.query(sql, [id, nombres, apellidos, comuna, rol, estado, hashedPassword], (err, result) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ success: false, message: 'Error al registrar usuario: ' + err.message });
+            }
+            res.json({ success: true, message: 'Usuario registrado exitosamente' });
+        });
+    });
+});
+
+
+app.get('/admin/usuarios/eliminar/:id', (req, res) => {
+    const userId = req.params.id;
+
+    const sql = 'DELETE FROM usuario WHERE id = ?';
+    oConexion.query(sql, [userId], (err, result) => {
+        if (err) {
+            console.error("Error en la DB:", err);
+            // 🔴 Redirigir con error en lugar de devolver JSON
+            return res.redirect('/admin/usuarios?error=db');
+        }
+
+        if (result.affectedRows === 0) {
+            // ⚠️ Usuario no encontrado
+            return res.redirect('/admin/usuarios?error=notfound');
+        }
+
+        // ✅ Eliminación exitosa → redirige con query param
+        res.redirect('/admin/usuarios?deleted=1');
+    });
+});
+
+
+
+/**
+ * 
+ * @description ruta para editar un usuario (vista) 
+ * @param {string} id - ID del usuario a editar
+ * link : http://localhost:3000/admin/usuarios/editar/VRC
+ *                             /admin/usuarios/editar/<%= usuario.id %>
+ */
+
+app.get('/admin/usuarios/editar/:id', (req, res) => {
+  const userId = req.params.id;
+  const sql = 'SELECT * FROM usuario WHERE id = ? LIMIT 1';
+  oConexion.query(sql, [userId], (err, results) => {
+    if (err) return res.status(500).send("Error al obtener usuario: " + err.message);
+    if (results.length === 0) return res.status(404).send("Usuario no encontrado");
+    res.render('admin-usuarios-edicion', { usuario: results[0], title: "Editar Usuario | SmartBee" });
+  });
+});
+
+app.post('/admin/usuarios/editar/:id', (req, res) => {
+
+
+    const userId = req.params.id;
+    const { nombres, apellidos, comuna, rol , estado} = req.body;
+    if (!nombres || !apellidos || !comuna || !rol  || !estado) {
+        return res.status(400).json({ success: false, message: 'Todos los campos son obligatorios' });
+    }
+    
+    const sql = 'UPDATE usuario SET nombre = ?, apellido = ?, comuna = ?, rol = ? , activo = ? WHERE id = ?';
+    oConexion.query(sql, [nombres, apellidos, comuna, rol, estado, userId], (
+        err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ success: false, message: 'Error al actualizar usuario: ' + err.message });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+        }
+        res.json({ success: true, message: 'Usuario actualizado exitosamente' });
+    });
+});
+
+
+
+
+
+
 app.get('/logout', (req, res) => {
     req.session.destroy(err => {
         if (err) {
@@ -272,7 +383,7 @@ app.get('/logout', (req, res) => {
         res.redirect('/'); // Redirigir al inicio después de cerrar sesión
     });
 }
-);
+);  
 
 
 
