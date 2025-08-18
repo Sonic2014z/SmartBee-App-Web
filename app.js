@@ -166,6 +166,72 @@ app.get('/panel', (req, res) => {
 });
 
 
+/**
+ * 
+ * @description ruta para registrar un nuevo usuario (vista)
+ */
+
+app.get('/admin/usuarios/nuevo', (req, res) => {
+res.render('admin-nuevos-usuarios', { title: "Registro usuarios| SmartBee" });
+});
+
+
+/**
+ * 
+ * @description ruta para registrar un nuevo usuario (backend)
+ */
+
+app.post('/admin/usuarios/registrar', (req, res) => {
+    const { apellidos, estado, nombres, rol, id, comuna } = req.body;
+    const clave = req.body.id; // clave = mismo id
+
+    if (!apellidos || !estado || !nombres || !rol || !id || !clave || !comuna) {
+        return res.status(400).json({ success: false, message: 'Todos los campos son obligatorios' });
+    }
+
+    // Encriptar la clave antes de guardarla
+    bcrypt.hash(clave, 10, (err, hashedPassword) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ success: false, message: 'Error al encriptar la clave' });
+        }
+
+        const sql = 'INSERT INTO usuario (id, nombre, apellido, comuna, rol, activo, clave) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        oConexion.query(sql, [id, nombres, apellidos, comuna, rol, estado, hashedPassword], (err, result) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ success: false, message: 'Error al registrar usuario: ' + err.message });
+            }
+            res.json({ success: true, message: 'Usuario registrado exitosamente' });
+        });
+    });
+});
+
+
+app.get('/admin/usuarios/eliminar/:id', (req, res) => {
+    const userId = req.params.id;
+
+    const sql = 'DELETE FROM usuario WHERE id = ?';
+    oConexion.query(sql, [userId], (err, result) => {
+        if (err) {
+            console.error("Error en la DB:", err);
+            // 🔴 Redirigir con error en lugar de devolver JSON
+            return res.redirect('/admin/usuarios?error=db');
+        }
+
+        if (result.affectedRows === 0) {
+            // ⚠️ Usuario no encontrado
+            return res.redirect('/admin/usuarios?error=notfound');
+        }
+
+        // ✅ Eliminación exitosa → redirige con query param
+        res.redirect('/admin/usuarios?deleted=1');
+    });
+});
+
+
+
+
 app.get('/logout', (req, res) => {
     req.session.destroy(err => {
         if (err) {
