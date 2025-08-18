@@ -17,15 +17,15 @@ app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.set('layout', 'layout');
 
-// Middleware para requerir login en rutas privadas
-// Si el usuario no tiene sesión, lo redirige al login
-function requireLogin(req, res, next) {
-    if (!req.session.userId) {
-        // Comentario: Si no hay sesión, redirige a la página principal (login)
-        return res.redirect('/');
+    // Middleware para requerir login en rutas privadas
+    // Si el usuario no tiene sesión, lo redirige al login
+    function requireLogin(req, res, next) {
+        if (!req.session.userId) {
+            // Comentario: Si no hay sesión, redirige a la página principal (login)
+            return res.redirect('/');
+        }
+        next();
     }
-    next();
-}
 
 
 app.use(express.static('public'));
@@ -328,6 +328,51 @@ app.get('/admin/usuarios/eliminar/:id', (req, res) => {
 
 
 
+/**
+ * 
+ * @description ruta para editar un usuario (vista) 
+ * @param {string} id - ID del usuario a editar
+ * link : http://localhost:3000/admin/usuarios/editar/VRC
+ *                             /admin/usuarios/editar/<%= usuario.id %>
+ */
+
+app.get('/admin/usuarios/editar/:id', (req, res) => {
+  const userId = req.params.id;
+  const sql = 'SELECT * FROM usuario WHERE id = ? LIMIT 1';
+  oConexion.query(sql, [userId], (err, results) => {
+    if (err) return res.status(500).send("Error al obtener usuario: " + err.message);
+    if (results.length === 0) return res.status(404).send("Usuario no encontrado");
+    res.render('admin-usuarios-edicion', { usuario: results[0], title: "Editar Usuario | SmartBee" });
+  });
+});
+
+app.post('/admin/usuarios/editar/:id', (req, res) => {
+
+
+    const userId = req.params.id;
+    const { nombres, apellidos, comuna, rol , estado} = req.body;
+    if (!nombres || !apellidos || !comuna || !rol  || !estado) {
+        return res.status(400).json({ success: false, message: 'Todos los campos son obligatorios' });
+    }
+    
+    const sql = 'UPDATE usuario SET nombre = ?, apellido = ?, comuna = ?, rol = ? , activo = ? WHERE id = ?';
+    oConexion.query(sql, [nombres, apellidos, comuna, rol, estado, userId], (
+        err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ success: false, message: 'Error al actualizar usuario: ' + err.message });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+        }
+        res.json({ success: true, message: 'Usuario actualizado exitosamente' });
+    });
+});
+
+
+
+
+
 
 app.get('/logout', (req, res) => {
     req.session.destroy(err => {
@@ -338,7 +383,7 @@ app.get('/logout', (req, res) => {
         res.redirect('/'); // Redirigir al inicio después de cerrar sesión
     });
 }
-);
+);  
 
 
 
