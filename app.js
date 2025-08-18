@@ -150,6 +150,22 @@ app.get('/panel', (req, res) => {
     res.send('<h1>Bienvenido al Panel de SmartBee</h1>');
 });
 
+
+app.get('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error al cerrar sesión');
+        }
+        res.redirect('/'); // Redirigir al inicio después de cerrar sesión
+    });
+}
+);  
+
+
+
+
+
 app.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}`);
 });

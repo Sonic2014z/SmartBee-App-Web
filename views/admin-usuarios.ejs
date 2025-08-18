@@ -13,15 +13,9 @@
         <tbody>
             <% usuarios.forEach(usuario=> { %>
                 <tr class="border-b">
-                    <td class="px-4 py-2">
-                        <%= usuario.id %>
-                    </td>
-                    <td class="px-4 py-2">
-                        <%= usuario.nombre %>
-                    </td>
-                    <td class="px-4 py-2">
-                        <%= usuario.apellido %>
-                    </td>
+                    <td class="px-4 py-2"><%= usuario.id %></td>
+                    <td class="px-4 py-2"><%= usuario.nombre %></td>
+                    <td class="px-4 py-2"><%= usuario.apellido %></td>
                     <td class="px-4 py-2">
                         <%= usuario.rol==="API" ? "Apicultor" : "Administrador" %>
                     </td>
@@ -30,7 +24,7 @@
                         <% if (usuario.rol==="API" ) { %>
                             <a href="/admin/usuarios/eliminar/<%= usuario.id %>" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Eliminar</a>
                         <% } else { %>
-                                <span class="bg-red-400 text-white px-3 py-1 rounded opacity-50 cursor-not-allowed">Eliminar</span>
+                            <span class="bg-red-400 text-white px-3 py-1 rounded opacity-50 cursor-not-allowed">Eliminar</span>
                         <% } %>
                     </td>
                 </tr>
@@ -46,7 +40,31 @@
             searching: true,
             ordering: true,
             info: true,
-            responsive: true
+            responsive: true,
+            language: {
+                "decimal": "",
+                "emptyTable": "No hay datos disponibles en la tabla",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "infoEmpty": "Mostrando 0 a 0 de 0 registros",
+                "infoFiltered": "(filtrado de _MAX_ registros totales)",
+                "infoPostFix": "",
+                "thousands": ",",
+                "lengthMenu": "Mostrar _MENU_ registros",
+                "loadingRecords": "Cargando...",
+                "processing": "Procesando...",
+                "search": "Buscar:",
+                "zeroRecords": "No se encontraron registros coincidentes",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Último",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                },
+                "aria": {
+                    "sortAscending": ": activar para ordenar la columna ascendente",
+                    "sortDescending": ": activar para ordenar la columna descendente"
+                }
+            }
         })
     })
 </script>
