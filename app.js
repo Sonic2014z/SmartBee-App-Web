@@ -1,4 +1,7 @@
 const express = require('express');
+const session = require('express-session');
+const bcrypt = require('bcrypt');
+const mysql = require("mysql");
 const app = express();
 const expressLayouts = require('express-ejs-layouts');
 const session = require('express-session');
@@ -102,7 +105,7 @@ app.post('/login', (req, res) => {
 
         const usuario = results[0];
 
-        // Comparar la contraseña usando bcrypt
+        // Comparar contraseña encriptada
         bcrypt.compare(clave, usuario.clave, (err, esCorrecto) => {
             if (err) {
                 console.error(err);

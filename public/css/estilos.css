@@ -112,31 +112,69 @@ body {
     color: #777;
     margin-top: 30px;
 }
-
-.sidenav {
-    background-color: #d17a00;
+/* ==============================
+   PANEL APICULTOR
+============================== */
+.body-apicultor {
+  background-color: #FEF9F6;
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
 }
 
-.sidenav a {
-    color: #fff !important;
-    font-weight: 500;
+/* Sidebar fija en desktop */
+.body-apicultor .sidenav.sidenav-fixed {
+  width: 240px;
+  top: 0;
+  left: 0;
+  height: 100%;
 }
 
-.sidenav i.material-icons {
-    color: #fff !important;
+/* Contenido ajustado a la barra */
+.body-apicultor main {
+  margin-left: 240px; 
+  padding: 20px;
 }
 
-.sidenav .user-view .name,
-.sidenav .user-view .email {
-    color: #fff !important;
+.body-apicultor .sidenav li a,
+.body-apicultor .sidenav li a i {
+  color: white !important;
 }
 
-.nav-wrapper,
-.sidenav,
-.sidenav a,
-.brand-logo,
-h1, h2, h3, h4, h5, h6,
-p,
-table {
-    font-family: 'Roboto', sans-serif !important;
+/* Tarjetas */
+.body-apicultor .card {
+  border-radius: 10px;
+  border-top: 5px solid transparent;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Tarjetas específicas */
+.body-apicultor .card-humedad {
+  border-top-color: #3B82F6;
+}
+.body-apicultor .card-peso {
+  border-top-color: #22C55E;
+}
+.body-apicultor .card-temperatura {
+  border-top-color: #DC2626;
+}
+
+/* Alertas */
+.body-apicultor .card-alerta {
+  border-left: 5px solid #EF4444;
+  background-color: #FEE2E2;
+}
+
+.body-apicultor .card-notificacion {
+  border-left: 5px solid #3B82F6;
+  background-color: #DBEAFE;
+}
+
+/* Responsive: en móvil que el contenido use todo el ancho */
+@media screen and (max-width: 992px) {
+  .body-apicultor main {
+    margin-left: 0 !important;
+  }
+  .body-apicultor .sidenav.sidenav-fixed {
+    transform: translateX(-100%); /* oculta sidebar */
+  }
 }
