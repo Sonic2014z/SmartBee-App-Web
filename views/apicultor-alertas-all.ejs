@@ -1,0 +1,111 @@
+<section class="w-full bg-white rounded-lg overflow-hidden select-none" aria-label="Historial de Alertas del Sistema">
+
+
+    <!-- Encabezado -->
+    <header
+        class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-6 py-4 border-b border-gray-200"
+        role="heading" aria-level="1">
+        <div class="flex items-center gap-2">
+            <i class="fas fa-bell text-[#F5A623] text-lg" aria-hidden="true"></i>
+            <h1 class="font-semibold text-base text-black leading-tight">Historial de Alertas</h1>
+        </div>
+
+        <!-- Contadores globales -->
+        <div class="flex gap-2 text-xs font-semibold leading-none">
+            <span
+                class="flex items-center gap-1 bg-[#FBD7D9] text-[#B93B3B] rounded-full px-1.5 py-0 sm:px-2 sm:py-0.5">
+                <span class="w-2 h-2 rounded-full bg-[#B93B3B] block"></span>
+                <span class="hidden sm:inline">Críticas:</span>
+                <%= counts.criticas %>
+            </span>
+            <span
+                class="flex items-center gap-1 bg-[#FFF7D1] text-[#B59B2B] rounded-full px-1.5 py-0 sm:px-2 sm:py-0.5">
+                <span class="w-2 h-2 rounded-full bg-[#B59B2B] block"></span>
+                <span class="hidden sm:inline">Advertencias:</span>
+                <%= counts.advertencias %>
+            </span>
+            <span
+                class="flex items-center gap-1 bg-[#D7E5FF] text-[#3B6BB9] rounded-full px-1.5 py-0 sm:px-2 sm:py-0.5">
+                <span class="w-2 h-2 rounded-full bg-[#3B6BB9] block"></span>
+                <span class="hidden sm:inline">Informativas:</span>
+                <%= counts.informativas %>
+            </span>
+        </div>
+    </header>
+
+    <!-- Botón para volver atrás -->
+    <div class="px-6 py-4">
+        <a href="/apicultor/alertas"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[#d17a00] text-white font-semibold text-sm hover:bg-[#b06500] transition-colors">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i>
+            Volver
+        </a>
+    </div>
+
+
+    <!-- Filtros -->
+    <div class="flex flex-wrap gap-2 px-6 py-3 border-b border-gray-200 text-xs">
+        <a href="/apicultor/alertas-all"
+            class="px-3 py-1 rounded-md font-semibold <%= !filtro ? 'bg-[#E5E7EB] text-[#111]' : 'text-[#555] hover:bg-[#F0F0F0]' %>">Todas</a>
+        <a href="/apicultor/alertas-all?tipo=CRITICO"
+            class="px-3 py-1 rounded-md font-semibold <%= filtro === 'CRITICO' ? 'bg-[#FBD7D9] text-[#B93B3B]' : 'text-[#B93B3B] hover:bg-[#FDE9EB]' %>">Críticas</a>
+        <a href="/apicultor/alertas-all?tipo=ADVERTENCIA"
+            class="px-3 py-1 rounded-md font-semibold <%= filtro === 'ADVERTENCIA' ? 'bg-[#FFF7D1] text-[#B59B2B]' : 'text-[#B59B2B] hover:bg-[#FFF9E3]' %>">Advertencias</a>
+        <a href="/apicultor/alertas-all?tipo=INFORMATIVA"
+            class="px-3 py-1 rounded-md font-semibold <%= filtro === 'INFORMATIVA' ? 'bg-[#D7E5FF] text-[#3B6BB9]' : 'text-[#3B6BB9] hover:bg-[#E8F0FF]' %>">Informativas</a>
+    </div>
+
+    <!-- Lista de alertas -->
+    <% if (alertas && alertas.length> 0) { %>
+        <% alertas.forEach(a=> { %>
+            <article
+                class="flex flex-col gap-2 px-6 py-4 border-b-2 border-gray-500
+               <%= a.tipo === 'CRITICO' ? 'bg-[#FDE9EB]' : a.tipo === 'ADVERTENCIA' ? 'bg-[#FFF9E3]' : 'bg-[#D7E5FF]' %>"
+                aria-label="Alerta <%= a.tipo %>: <%= a.nombre %>" role="region">
+
+                <div class="flex justify-between items-start">
+                    <h2
+                        class="font-bold text-sm leading-tight flex items-center gap-2
+                     <%= a.tipo === 'CRITICO' ? 'text-[#B93B3B]' : a.tipo === 'ADVERTENCIA' ? 'text-[#B59B2B]' : 'text-[#3B6BB9]' %>">
+                        <% if (a.tipo==='CRITICO' ) { %>
+                            <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+                            <% } else if (a.tipo==='ADVERTENCIA' ) { %>
+                                <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                <% } else { %>
+                                    <i class="fas fa-info-circle" aria-hidden="true"></i>
+                                    <% } %>
+                                        <%= a.tipo %>: <%= a.nombre %>
+                    </h2>
+
+                    <time class="text-xs text-[#4B4B4B] whitespace-nowrap"
+                        datetime="<%= new Date(a.fecha).toISOString() %>">
+                        <%= new Date(a.fecha).toLocaleString('es-CL', { dateStyle:'short', timeStyle:'short' }) %>
+                    </time>
+                </div>
+
+                <p
+                    class="text-xs leading-tight
+                  <%= a.tipo === 'CRITICO' ? 'text-[#D96B6B]' : a.tipo === 'ADVERTENCIA' ? 'text-[#B59B2B]' : 'text-[#3B6BB9]' %>">
+                    <%= a.descripcion %>
+                </p>
+
+                <div class="flex gap-2 mt-2">
+                    <button type="button"
+                        class="text-xs rounded-md px-3 py-1
+                         <%= a.tipo === 'CRITICO' ? 'text-[#B93B3B] bg-[#FBD7D9]' : a.tipo === 'ADVERTENCIA' ? 'text-[#B59B2B] bg-[#FFF7D1]' : 'text-[#3B6BB9] bg-[#D7E5FF]' %>">
+                        <%= a.nodo_tipo %>
+                    </button>
+                    <button type="button"
+                        class="text-xs rounded-md px-3 py-1
+                         <%= a.tipo === 'CRITICO' ? 'text-[#B93B3B] bg-[#FBD7D9]' : a.tipo === 'ADVERTENCIA' ? 'text-[#B59B2B] bg-[#FFF7D1]' : 'text-[#3B6BB9] bg-[#D7E5FF]' %>">
+                        <%= a.nodo_descripcion %>
+                    </button>
+                </div>
+            </article>
+            <% }) %>
+                <% } else { %>
+                    <div class="px-6 py-8 text-center text-sm text-gray-500">
+                        No se encontraron alertas para este filtro.
+                    </div>
+                    <% } %>
+</section>
