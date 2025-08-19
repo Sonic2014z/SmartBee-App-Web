@@ -17,15 +17,15 @@ app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.set('layout', 'layout');
 
-    // Middleware para requerir login en rutas privadas
-    // Si el usuario no tiene sesión, lo redirige al login
-    function requireLogin(req, res, next) {
-        if (!req.session.userId) {
-            // Comentario: Si no hay sesión, redirige a la página principal (login)
-            return res.redirect('/');
-        }
-        next();
+// Middleware para requerir login en rutas privadas
+// Si el usuario no tiene sesión, lo redirige al login
+function requireLogin(req, res, next) {
+    if (!req.session.userId) {
+        // Comentario: Si no hay sesión, redirige a la página principal (login)
+        return res.redirect('/');
     }
+    next();
+}
 
 
 app.use(express.static('public'));
@@ -87,7 +87,7 @@ app.get('/panelapicultor', requireLogin, (req, res) => {
 });
 
 app.get('/apicultor/alertas', (req, res) => {
-  const sql = `
+    const sql = `
     SELECT 
       na.id,
       na.fecha,
@@ -107,29 +107,29 @@ app.get('/apicultor/alertas', (req, res) => {
     LIMIT 5
   `;
 
-  oConexion.query(sql, (err, rows) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Error al obtener alertas");
-    }
+    oConexion.query(sql, (err, rows) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send("Error al obtener alertas");
+        }
 
-    // contadores
-    const counts = { criticas: 0, advertencias: 0, informativas: 0 };
-    for (const r of rows) {
-      if (r.tipo === 'CRITICO') counts.criticas++;
-      else if (r.tipo === 'ADVERTENCIA') counts.advertencias++;
-      else counts.informativas++;
-    }
+        // contadores
+        const counts = { criticas: 0, advertencias: 0, informativas: 0 };
+        for (const r of rows) {
+            if (r.tipo === 'CRITICO') counts.criticas++;
+            else if (r.tipo === 'ADVERTENCIA') counts.advertencias++;
+            else counts.informativas++;
+        }
 
-    res.render('apicultor-alertas', { alertas: rows, counts, layout: "layout-apicultor", title: "Alertas | SmartBee" });
-  });
+        res.render('apicultor-alertas', { alertas: rows, counts, layout: "layout-apicultor", title: "Alertas | SmartBee" });
+    });
 });
 
 app.get("/apicultor/alertas-all", (req, res) => {
-  const filtro = req.query.tipo;
+    const filtro = req.query.tipo;
 
-  // Obtener todas las alertas para contar cada tipo
-  oConexion.query(`
+    // Obtener todas las alertas para contar cada tipo
+    oConexion.query(`
     SELECT 
       CASE
         WHEN a.nombre LIKE '%Crític%' OR a.nombre LIKE '%Critic%' THEN 'CRITICO'
@@ -139,17 +139,17 @@ app.get("/apicultor/alertas-all", (req, res) => {
     FROM nodo_alerta na
     JOIN alerta a ON na.alerta_id = a.id
   `, (err, todasAlertas) => {
-    if (err) return res.status(500).send("Error al obtener alertas para contadores");
+        if (err) return res.status(500).send("Error al obtener alertas para contadores");
 
-    const counts = { criticas: 0, advertencias: 0, informativas: 0 };
-    todasAlertas.forEach(a => {
-      if (a.tipo === "CRITICO") counts.criticas++;
-      else if (a.tipo === "ADVERTENCIA") counts.advertencias++;
-      else counts.informativas++;
-    });
+        const counts = { criticas: 0, advertencias: 0, informativas: 0 };
+        todasAlertas.forEach(a => {
+            if (a.tipo === "CRITICO") counts.criticas++;
+            else if (a.tipo === "ADVERTENCIA") counts.advertencias++;
+            else counts.informativas++;
+        });
 
-    // Obtener alertas con filtro si existe
-    let sql = `
+        // Obtener alertas con filtro si existe
+        let sql = `
       SELECT 
         na.id,
         na.fecha,
@@ -166,19 +166,19 @@ app.get("/apicultor/alertas-all", (req, res) => {
       JOIN alerta a ON na.alerta_id = a.id
       JOIN nodo n ON na.nodo_id = n.id
     `;
-    const params = [];
-    if (filtro) {
-      sql += " HAVING tipo = ?";
-      params.push(filtro);
-    }
-    sql += " ORDER BY na.fecha DESC";
+        const params = [];
+        if (filtro) {
+            sql += " HAVING tipo = ?";
+            params.push(filtro);
+        }
+        sql += " ORDER BY na.fecha DESC";
 
-    oConexion.query(sql, params, (err, alertas) => {
-      if (err) return res.status(500).send("Error al obtener alertas filtradas");
+        oConexion.query(sql, params, (err, alertas) => {
+            if (err) return res.status(500).send("Error al obtener alertas filtradas");
 
-      res.render("apicultor-alertas-all", { alertas, counts, filtro, layout: "layout-apicultor", title: "Alertas | SmartBee" });
+            res.render("apicultor-alertas-all", { alertas, counts, filtro, layout: "layout-apicultor", title: "Alertas | SmartBee" });
+        });
     });
-  });
 });
 
 
@@ -208,15 +208,45 @@ app.get('/paneladministrador', requireLogin, (req, res) => {
         });
     });
 
-    Promise.all([totalUsuarios, totalNodos, totalAlertas])
-    .then (([usuarios, nodos, alertas]) => {
-        const stats = { usuarios, nodos, alertas };
-        res.render('admin', { stats, title: "Panel Principal | SmartBee" });
-    })
-    .catch(err => {
-        console.error(err);
-        res.status(500).send("Error al obtener estadísticas.");
+    const latestPerNode = new Promise((resolve, reject) => {
+        const sql = `
+            SELECT nm.nodo_id, nm.payload, nm.fecha
+            FROM nodo_mensaje nm
+            INNER JOIN (
+                SELECT nodo_id, MAX(fecha) AS max_fecha
+                FROM nodo_mensaje
+                GROUP BY nodo_id
+            ) latest ON nm.nodo_id = latest.nodo_id AND nm.fecha = latest.max_fecha
+            ORDER BY nm.nodo_id
+        `;
+        oConexion.query(sql, (err, rows) => {
+            if (err) return reject(err);
+            // Parse payloads
+            const nodeData = rows.map(row => {
+                const data = JSON.parse(row.payload);
+                return {
+                    nodo_id: row.nodo_id,
+                    temperatura: data.temperatura,
+                    humedad: data.humedad
+                };
+            });
+            resolve(nodeData);
+        });
     });
+
+    Promise.all([totalUsuarios, totalNodos, totalAlertas, latestPerNode])
+        .then(([usuarios, nodos, alertas, nodeData]) => {
+            const stats = { usuarios, nodos, alertas };
+            res.render('admin', {
+                stats,
+                nodeData,
+                title: "Panel Principal | SmartBee"
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).send("Error al obtener estadísticas.");
+        });
 });
 
 
@@ -301,7 +331,7 @@ app.get('/panel', (req, res) => {
  */
 
 app.get('/admin/usuarios/nuevo', (req, res) => {
-res.render('admin-nuevos-usuarios', { title: "Registro usuarios| SmartBee" });
+    res.render('admin-nuevos-usuarios', { title: "Registro usuarios| SmartBee" });
 });
 
 
@@ -369,24 +399,24 @@ app.get('/admin/usuarios/eliminar/:id', (req, res) => {
  */
 
 app.get('/admin/usuarios/editar/:id', (req, res) => {
-  const userId = req.params.id;
-  const sql = 'SELECT * FROM usuario WHERE id = ? LIMIT 1';
-  oConexion.query(sql, [userId], (err, results) => {
-    if (err) return res.status(500).send("Error al obtener usuario: " + err.message);
-    if (results.length === 0) return res.status(404).send("Usuario no encontrado");
-    res.render('admin-usuarios-edicion', { usuario: results[0], title: "Editar Usuario | SmartBee" });
-  });
+    const userId = req.params.id;
+    const sql = 'SELECT * FROM usuario WHERE id = ? LIMIT 1';
+    oConexion.query(sql, [userId], (err, results) => {
+        if (err) return res.status(500).send("Error al obtener usuario: " + err.message);
+        if (results.length === 0) return res.status(404).send("Usuario no encontrado");
+        res.render('admin-usuarios-edicion', { usuario: results[0], title: "Editar Usuario | SmartBee" });
+    });
 });
 
 app.post('/admin/usuarios/editar/:id', (req, res) => {
 
 
     const userId = req.params.id;
-    const { nombres, apellidos, comuna, rol , estado} = req.body;
-    if (!nombres || !apellidos || !comuna || !rol  || !estado) {
+    const { nombres, apellidos, comuna, rol, estado } = req.body;
+    if (!nombres || !apellidos || !comuna || !rol || !estado) {
         return res.status(400).json({ success: false, message: 'Todos los campos son obligatorios' });
     }
-    
+
     const sql = 'UPDATE usuario SET nombre = ?, apellido = ?, comuna = ?, rol = ? , activo = ? WHERE id = ?';
     oConexion.query(sql, [nombres, apellidos, comuna, rol, estado, userId], (
         err, result) => {
@@ -415,80 +445,80 @@ app.get('/logout', (req, res) => {
         res.redirect('/'); // Redirigir al inicio después de cerrar sesión
     });
 }
-);  
+);
 
 
 app.post('/admin/nuevonodo', (req, res) => {
-  const {
-    nodo_id,
-    nodo_descripcion,
-    tipoNodo,   // "Colmena" o "Ambiental"
-    colmena_id,
-    estacion_id,
-    descripcion,
-    latitud,
-    longitud,
-    dueno
-  } = req.body;
+    const {
+        nodo_id,
+        nodo_descripcion,
+        tipoNodo,   // "Colmena" o "Ambiental"
+        colmena_id,
+        estacion_id,
+        descripcion,
+        latitud,
+        longitud,
+        dueno
+    } = req.body;
 
-  // Normalizamos tipo
-  const tipo = (tipoNodo === "Colmena") ? "COLMENA" : "AMBIENTAL";
+    // Normalizamos tipo
+    const tipo = (tipoNodo === "Colmena") ? "COLMENA" : "AMBIENTAL";
 
-  // 1. Insertar nodo
-  const sqlNodo = "INSERT INTO nodo (id, descripcion, tipo) VALUES (?, ?, ?)";
-  oConexion.query(sqlNodo, [nodo_id, nodo_descripcion, tipo], (err) => {
-    if (err) {
-      console.error("Error al insertar en nodo:", err);
-      return res.status(500).send("Error al crear nodo");
-    }
+    // 1. Insertar nodo
+    const sqlNodo = "INSERT INTO nodo (id, descripcion, tipo) VALUES (?, ?, ?)";
+    oConexion.query(sqlNodo, [nodo_id, nodo_descripcion, tipo], (err) => {
+        if (err) {
+            console.error("Error al insertar en nodo:", err);
+            return res.status(500).send("Error al crear nodo");
+        }
 
-    if (tipo === "COLMENA") {
-      // 2. Insertar colmena si no existe
-      const sqlColmena = `
+        if (tipo === "COLMENA") {
+            // 2. Insertar colmena si no existe
+            const sqlColmena = `
         INSERT IGNORE INTO colmena (id, descripcion, latitud, longitud, dueno)
         VALUES (?, ?, ?, ?, ?)
       `;
-      oConexion.query(sqlColmena, [colmena_id, descripcion, latitud, longitud, dueno], (err) => {
-        if (err) {
-          console.error("Error al insertar en colmena:", err);
-          return res.status(500).send("Error al crear colmena");
-        }
+            oConexion.query(sqlColmena, [colmena_id, descripcion, latitud, longitud, dueno], (err) => {
+                if (err) {
+                    console.error("Error al insertar en colmena:", err);
+                    return res.status(500).send("Error al crear colmena");
+                }
 
-        // 3. Relacion nodo-colmena
-        const sqlRel = "INSERT INTO nodo_colmena (colmena_id, nodo_id) VALUES (?, ?)";
-        oConexion.query(sqlRel, [colmena_id, nodo_id], (err) => {
-          if (err) {
-            console.error("Error al relacionar nodo-colmena:", err);
-            return res.status(500).send("Error en relación nodo-colmena");
-          }
-          res.redirect('/admin/nodos');
-        });
-      });
+                // 3. Relacion nodo-colmena
+                const sqlRel = "INSERT INTO nodo_colmena (colmena_id, nodo_id) VALUES (?, ?)";
+                oConexion.query(sqlRel, [colmena_id, nodo_id], (err) => {
+                    if (err) {
+                        console.error("Error al relacionar nodo-colmena:", err);
+                        return res.status(500).send("Error en relación nodo-colmena");
+                    }
+                    res.redirect('/admin/nodos');
+                });
+            });
 
-    } else {
-      // 2. Insertar estación si no existe
-      const sqlEstacion = `
+        } else {
+            // 2. Insertar estación si no existe
+            const sqlEstacion = `
         INSERT IGNORE INTO estacion (id, descripcion, latitud, longitud, dueno)
         VALUES (?, ?, ?, ?, ?)
       `;
-      oConexion.query(sqlEstacion, [estacion_id, descripcion, latitud, longitud, dueno], (err) => {
-        if (err) {
-          console.error("Error al insertar en estación:", err);
-          return res.status(500).send("Error al crear estación");
-        }
+            oConexion.query(sqlEstacion, [estacion_id, descripcion, latitud, longitud, dueno], (err) => {
+                if (err) {
+                    console.error("Error al insertar en estación:", err);
+                    return res.status(500).send("Error al crear estación");
+                }
 
-        // 3. Relacion nodo-estacion
-        const sqlRel = "INSERT INTO nodo_estacion (estacion_id, nodo_id) VALUES (?, ?)";
-        oConexion.query(sqlRel, [estacion_id, nodo_id], (err) => {
-          if (err) {
-            console.error("Error al relacionar nodo-estacion:", err);
-            return res.status(500).send("Error en relación nodo-estacion");
-          }
-          res.redirect('/admin/nodos');
-        });
-      });
-    }
-  });
+                // 3. Relacion nodo-estacion
+                const sqlRel = "INSERT INTO nodo_estacion (estacion_id, nodo_id) VALUES (?, ?)";
+                oConexion.query(sqlRel, [estacion_id, nodo_id], (err) => {
+                    if (err) {
+                        console.error("Error al relacionar nodo-estacion:", err);
+                        return res.status(500).send("Error en relación nodo-estacion");
+                    }
+                    res.redirect('/admin/nodos');
+                });
+            });
+        }
+    });
 });
 
 
