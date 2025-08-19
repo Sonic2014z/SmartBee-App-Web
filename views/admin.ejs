@@ -1,6 +1,41 @@
-<h4>Panel de Administración</h4>
-<p>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab necessitatibus accusamus doloremque quisquam
-    blanditiis laborum, voluptate minus voluptatem ipsa deserunt saepe? Tempora ad dolores, debitis temporibus
-    molestias id quibusdam in!
-</p>
+<h1 class="text-3xl font-extrabold">Panel Principal</h1>
+</br>
+<span class="text-xl font-bold">Estadísticas:</span>
+
+<section class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+  <!-- Usuarios Widget (Touchable Card) -->
+  <a href="/admin/usuarios" class="bg-white rounded-lg shadow p-4 flex flex-col items-center transition hover:bg-[#FFF7E0] active:bg-[#FFE4B3] focus:outline-none focus:ring-2 focus:ring-[#D17A08] cursor-pointer">
+    <i class="fas fa-users text-3xl text-[#D17A08] mb-2"></i>
+    <div class="text-2xl font-bold"><%= stats.usuarios %></div>
+    <div class="text-sm text-gray-600 font-bold">Usuarios registrados</div>
+    <span class="mt-2 text-[#D17A08] hover:underline text-xs">Ver usuarios</span>
+  </a>
+  <!-- Nodos Widget (Touchable Card) -->
+  <a href="/admin/nodos" class="bg-white rounded-lg shadow p-4 flex flex-col items-center transition hover:bg-[#FFF7E0] active:bg-[#FFE4B3] focus:outline-none focus:ring-2 focus:ring-[#D87E0A] cursor-pointer">
+    <i class="fas fa-network-wired text-3xl text-[#D87E0A] mb-2"></i>
+    <div class="text-2xl font-bold"><%= stats.nodos %></div>
+    <div class="text-sm text-gray-600 font-bold">Nodos activos</div>
+    <span class="mt-2 text-[#D87E0A] hover:underline text-xs">Ver nodos</span>
+  </a>
+</section>
+
+<h2 class="text-xl font-bold">
+    Acciones rápidas:
+</h2>
+
+<section class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+  <a href="/admin/usuarios/nuevo" class="bg-white rounded-lg shadow p-4 flex flex-col items-center transition hover:bg-[#FFF7E0] active:bg-[#FFE4B3] focus:outline-none focus:ring-2 focus:ring-[#D17A08] cursor-pointer">
+    <i class="fas fa-user-plus text-3xl text-[#D17A08] mb-2"></i>
+    <span class="mt-2 text-[#D87E0A] font-semibold text-base text-center">Crear un nuevo usuario</span>
+  </a>
+
+  <a href="/admin/nuevonodo" class="bg-white rounded-lg shadow p-4 flex flex-col items-center transition hover:bg-[#FFF7E0] active:bg-[#FFE4B3] focus:outline-none focus:ring-2 focus:ring-[#D17A08] cursor-pointer">
+    <i class="fas fa-map-marker-alt text-3xl text-[#D17A08] mb-2"></i>
+    <span class="mt-2 text-[#D87E0A] font-semibold text-base text-center">Crear un nuevo nodo</span>
+  </a>
+
+  <a href="/logout" class="bg-white rounded-lg shadow p-4 flex flex-col items-center transition hover:bg-[#FFF7E0] active:bg-[#FFE4B3] focus:outline-none focus:ring-2 focus:ring-[#D17A08] cursor-pointer">
+    <i class="fas fa-sign-out-alt text-3xl text-[#D17A08] mb-2"></i>
+    <span class="mt-2 text-[#D87E0A] font-semibold text-base text-center">Cerrar sesión</span>
+  </a>
+</section>

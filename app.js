@@ -186,7 +186,37 @@ app.get("/apicultor/alertas-all", (req, res) => {
 
 // Protegido con requireLogin para evitar acceso sin sesión
 app.get('/paneladministrador', requireLogin, (req, res) => {
-    res.render('admin', { title: "Panel Principal | SmartBee " });
+    // 3 queries: total de usuarios, total de nodos, total de alertas.
+    const totalUsuarios = new Promise((resolve, reject) => {
+        oConexion.query('SELECT COUNT(*) AS total FROM usuario', (err, rows) => {
+            if (err) return reject(err);
+            resolve(rows[0].total);
+        });
+    });
+
+    const totalNodos = new Promise((resolve, reject) => {
+        oConexion.query('SELECT COUNT(*) AS total FROM nodo', (err, rows) => {
+            if (err) return reject(err);
+            resolve(rows[0].total);
+        });
+    });
+
+    const totalAlertas = new Promise((resolve, reject) => {
+        oConexion.query('SELECT COUNT(*) AS total FROM nodo_alerta', (err, rows) => {
+            if (err) return reject(err);
+            resolve(rows[0].total);
+        });
+    });
+
+    Promise.all([totalUsuarios, totalNodos, totalAlertas])
+    .then (([usuarios, nodos, alertas]) => {
+        const stats = { usuarios, nodos, alertas };
+        res.render('admin', { stats, title: "Panel Principal | SmartBee" });
+    })
+    .catch(err => {
+        console.error(err);
+        res.status(500).send("Error al obtener estadísticas.");
+    });
 });
 
 
