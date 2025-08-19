@@ -1,53 +1,66 @@
 <section class="p-6 flex-1 overflow-auto">
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-7xl mx-auto">
+  <div class="max-w-7xl mx-auto">
 
-    <article
-      class="bg-white rounded-lg shadow-md relative pt-3 pb-6 px-6 border-t-4 border-[#D87E0A]"
-      aria-label="Nodo X Colmena">
-      
-      <div class="flex justify-between text-xs text-[#2B2B2B] font-light mb-1">
-        <div>Nodo X (Colmena)</div>
-        <div>Ubicación: xxx</div>
-      </div>
+    <!-- Botón para agregar nodo -->
+    <div class="flex justify-end mb-4">
+      <a href="/admin/nuevonodo"
+        class="flex items-center space-x-2 bg-[#D87E0A] hover:bg-[#b56408] text-white text-sm font-semibold rounded px-4 py-2 shadow transition">
+        <i class="fas fa-plus"></i>
+        <span>Agregar Nodo</span>
+      </a>
 
-      <!-- Labels abreviados en móviles -->
-      <div class="flex justify-between font-semibold text-sm mb-1">
-        <div>
-          <span class="sm:hidden">Hum:</span>
-          <span class="hidden sm:inline">Humedad:</span>
+    </div>
+
+    <!-- Grilla de nodos -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+      <article class="bg-white rounded-lg shadow-md relative pt-3 pb-6 px-6 border-t-4 border-[#D87E0A]"
+        aria-label="Nodo X Colmena">
+
+        <div class="flex justify-between text-xs text-[#2B2B2B] font-light mb-1">
+          <div>Nodo X (Colmena)</div>
+          <div>Ubicación: xxx</div>
         </div>
-        <div>
-          <span class="sm:hidden">Temp:</span>
-          <span class="hidden sm:inline">Temperatura:</span>
+
+        <!-- Labels abreviados en móviles -->
+        <div class="flex justify-between font-semibold text-sm mb-1">
+          <div>
+            <span class="sm:hidden">Hum:</span>
+            <span class="hidden sm:inline">Humedad:</span>
+          </div>
+          <div>
+            <span class="sm:hidden">Temp:</span>
+            <span class="hidden sm:inline">Temperatura:</span>
+          </div>
+          <div class="pr-6">
+            <span class="sm:hidden">Peso:</span>
+            <span class="hidden sm:inline">Peso:</span>
+          </div>
         </div>
-        <div class="pr-6">
-          <span class="sm:hidden">Peso:</span>
-          <span class="hidden sm:inline">Peso:</span>
+
+        <div class="flex justify-between font-extrabold text-2xl mb-4">
+          <div>44<span class="text-base font-bold">%</span></div>
+          <div>29<span class="text-base font-bold">°c</span></div>
+          <div class="pr-6">22<span class="text-base font-bold">kg</span></div>
         </div>
-      </div>
 
-      <div class="flex justify-between font-extrabold text-2xl mb-4">
-        <div>44<span class="text-base font-bold">%</span></div>
-        <div>29<span class="text-base font-bold">°c</span></div>
-        <div class="pr-6">22<span class="text-base font-bold">kg</span></div>
-      </div>
+        <div class="flex space-x-3">
+          <button
+            class="flex items-center space-x-1 bg-[#D87E0A] text-white text-xs font-semibold rounded px-3 py-1 shadow"
+            type="button">
+            <i class="fas fa-chart-bar"></i>
+            <span>Ver Gráfico</span>
+          </button>
+          <button
+            class="flex items-center space-x-1 bg-[#D92B27] text-white text-xs font-semibold rounded px-3 py-1 shadow"
+            type="button">
+            <i class="fas fa-trash-alt"></i>
+            <span>Eliminar</span>
+          </button>
+        </div>
 
-      <div class="flex space-x-3">
-        <button
-          class="flex items-center space-x-1 bg-[#D87E0A] text-white text-xs font-semibold rounded px-3 py-1 shadow"
-          type="button">
-          <i class="fas fa-chart-bar"></i>
-          <span>Ver Gráfico</span>
-        </button>
-        <button
-          class="flex items-center space-x-1 bg-[#D92B27] text-white text-xs font-semibold rounded px-3 py-1 shadow"
-          type="button">
-          <i class="fas fa-trash-alt"></i>
-          <span>Eliminar</span>
-        </button>
-      </div>
+      </article>
 
-    </article>
-
+    </div>
   </div>
 </section>

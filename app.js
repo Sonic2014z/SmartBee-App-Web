@@ -68,7 +68,9 @@ app.get('/admin/usuarios', (req, res) => {
 app.get('/admin/nodos', (req, res) => {
     res.render('admin-nodos', { layout: "layout", title: 'Nodos | SmartBee' });
 });
-
+app.get('/admin/nuevonodo', (req, res) => {
+    res.render('admin-nuevonodo', { layout: "layout", title: 'Nodos | SmartBee' });
+});
 app.get('/recuperar', (req, res) => {
     res.render('recuperar', { layout: false });
 });
@@ -386,6 +388,78 @@ app.get('/logout', (req, res) => {
 );  
 
 
+app.post('/admin/nuevonodo', (req, res) => {
+  const {
+    nodo_id,
+    nodo_descripcion,
+    tipoNodo,   // "Colmena" o "Ambiental"
+    colmena_id,
+    estacion_id,
+    descripcion,
+    latitud,
+    longitud,
+    dueno
+  } = req.body;
+
+  // Normalizamos tipo
+  const tipo = (tipoNodo === "Colmena") ? "COLMENA" : "AMBIENTAL";
+
+  // 1. Insertar nodo
+  const sqlNodo = "INSERT INTO nodo (id, descripcion, tipo) VALUES (?, ?, ?)";
+  oConexion.query(sqlNodo, [nodo_id, nodo_descripcion, tipo], (err) => {
+    if (err) {
+      console.error("Error al insertar en nodo:", err);
+      return res.status(500).send("Error al crear nodo");
+    }
+
+    if (tipo === "COLMENA") {
+      // 2. Insertar colmena si no existe
+      const sqlColmena = `
+        INSERT IGNORE INTO colmena (id, descripcion, latitud, longitud, dueno)
+        VALUES (?, ?, ?, ?, ?)
+      `;
+      oConexion.query(sqlColmena, [colmena_id, descripcion, latitud, longitud, dueno], (err) => {
+        if (err) {
+          console.error("Error al insertar en colmena:", err);
+          return res.status(500).send("Error al crear colmena");
+        }
+
+        // 3. Relacion nodo-colmena
+        const sqlRel = "INSERT INTO nodo_colmena (colmena_id, nodo_id) VALUES (?, ?)";
+        oConexion.query(sqlRel, [colmena_id, nodo_id], (err) => {
+          if (err) {
+            console.error("Error al relacionar nodo-colmena:", err);
+            return res.status(500).send("Error en relación nodo-colmena");
+          }
+          res.redirect('/admin/nodos');
+        });
+      });
+
+    } else {
+      // 2. Insertar estación si no existe
+      const sqlEstacion = `
+        INSERT IGNORE INTO estacion (id, descripcion, latitud, longitud, dueno)
+        VALUES (?, ?, ?, ?, ?)
+      `;
+      oConexion.query(sqlEstacion, [estacion_id, descripcion, latitud, longitud, dueno], (err) => {
+        if (err) {
+          console.error("Error al insertar en estación:", err);
+          return res.status(500).send("Error al crear estación");
+        }
+
+        // 3. Relacion nodo-estacion
+        const sqlRel = "INSERT INTO nodo_estacion (estacion_id, nodo_id) VALUES (?, ?)";
+        oConexion.query(sqlRel, [estacion_id, nodo_id], (err) => {
+          if (err) {
+            console.error("Error al relacionar nodo-estacion:", err);
+            return res.status(500).send("Error en relación nodo-estacion");
+          }
+          res.redirect('/admin/nodos');
+        });
+      });
+    }
+  });
+});
 
 
 
