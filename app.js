@@ -66,11 +66,59 @@ app.get('/admin/usuarios', (req, res) => {
 });
 
 app.get('/admin/nodos', (req, res) => {
-    res.render('admin-nodos', { layout: "layout", title: 'Nodos | SmartBee' });
+     const sql = `
+        SELECT n.id AS nodo_id,
+               n.descripcion AS nodo_desc,
+               n.tipo,
+               c.id AS colmena_id,
+               c.descripcion AS colmena_desc,
+               c.latitud AS colmena_lat,
+               c.longitud AS colmena_lng,
+               e.id AS estacion_id,
+               e.descripcion AS estacion_desc,
+               e.latitud AS estacion_lat,
+               e.longitud AS estacion_lng
+        FROM nodo n
+        LEFT JOIN nodo_colmena nc ON n.id = nc.nodo_id
+        LEFT JOIN colmena c ON nc.colmena_id = c.id
+        LEFT JOIN nodo_estacion ne ON n.id = ne.nodo_id
+        LEFT JOIN estacion e ON ne.estacion_id = e.id
+        ORDER BY n.id;
+    `;
+
+    oConexion.query(sql, (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send("Error al obtener nodos: " + err.message);
+        }
+
+        res.render("admin-nodos", { 
+            layout: "layout", 
+            title: "Nodos | SmartBee", 
+            nodos: results  // 👈 aquí mandamos nodos a la vista
+        });
+    });
 });
+
+
+
 app.get('/admin/nuevonodo', (req, res) => {
-    res.render('admin-nuevonodo', { layout: "layout", title: 'Nodos | SmartBee' });
+
+    const sql = "SELECT id, nombre , apellido , rol FROM usuario ";
+    oConexion.query(sql, (err, usuarios) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send("Error al obtener usuarios: " + err.message);
+        }
+        // Aquí el layout para la vista de admin es "layout".
+        res.render('admin-nuevonodo', { usuarios, layout: "layout", title: "Nuevo Nodo | SmartBee" });
+    });
+
+
 });
+
+
+
 app.get('/recuperar', (req, res) => {
     res.render('recuperar', { layout: false });
 });
@@ -489,6 +537,91 @@ app.post('/admin/nuevonodo', (req, res) => {
       });
     }
   });
+});
+
+
+/**
+ * 
+ * @description Ruta para obtener los nodos de un usuario
+ * ejemplos : http://localhost:3000/admin/nodos/amorales
+ * en ese caso se visualizará los nodos del usuario con id "amorales"
+ */
+app.get('/admin/nodos/:id', (req, res) => {
+    const userId = req.params.id;
+
+    // Consulta para obtener nodos del usuario
+    const sql = `
+    
+    SELECT n.id AS nodo_id,
+       n.descripcion AS nodo_desc,
+       n.tipo,
+       c.id AS colmena_id,
+       e.id AS estacion_id
+FROM usuario u
+LEFT JOIN colmena c ON c.dueno = u.id
+LEFT JOIN nodo_colmena nc ON nc.colmena_id = c.id
+LEFT JOIN estacion e ON e.dueno = u.id
+LEFT JOIN nodo_estacion ne ON ne.estacion_id = e.id
+LEFT JOIN nodo n 
+       ON n.id = nc.nodo_id OR n.id = ne.nodo_id
+WHERE u.id = ?;
+`;
+
+    oConexion.query(sql, [userId], (err, nodos) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send("Error al obtener nodos: " + err.message);
+        }
+        res.render('admin-nodos-users', { nodos, userId, layout: "layout", title: "Nodos de Usuario | SmartBee" });
+    });
+});
+
+
+
+/**
+ * 
+ * Vista para ver un nodo específico 
+ * @param {string} nodoId - ID del nodo a ver
+ * @description Ejemplo de URL: http://localhost:3000/admin/nodos/view/NODO-6FD1F27E-E80D-4723-B3FB-3D42204A0DD2
+ * 
+ */
+
+app.get('/admin/nodos/view/:nodoId', (req, res) => {
+    const nodoId = req.params.nodoId;
+
+    const sql = `
+        SELECT n.id AS nodo_id, n.descripcion AS nodo_desc, n.tipo,
+               c.id AS colmena_id, c.descripcion AS colmena_desc,
+               e.id AS estacion_id, e.descripcion AS estacion_desc,
+               JSON_UNQUOTE(JSON_EXTRACT(m.payload, '$.temperatura')) AS temperatura,
+               JSON_UNQUOTE(JSON_EXTRACT(m.payload, '$.humedad')) AS humedad,
+               JSON_UNQUOTE(JSON_EXTRACT(m.payload, '$.peso')) AS peso,
+               m.fecha AS ultima_fecha
+        FROM nodo n
+        LEFT JOIN nodo_colmena nc ON n.id = nc.nodo_id
+        LEFT JOIN colmena c ON nc.colmena_id = c.id
+        LEFT JOIN nodo_estacion ne ON n.id = ne.nodo_id
+        LEFT JOIN estacion e ON ne.estacion_id = e.id
+        LEFT JOIN nodo_mensaje m ON m.nodo_id = n.id
+        WHERE n.id = ?
+        ORDER BY m.fecha DESC
+        LIMIT 1;
+    `;
+
+    oConexion.query(sql, [nodoId], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send("Error al obtener nodo: " + err.message);
+        }
+        if (results.length === 0) {
+            return res.status(404).send("Nodo no encontrado");
+        }
+        res.render('admin-nodo-view', { 
+            nodo: results[0], 
+            layout: "layout", 
+            title: "Ver Nodo | SmartBee" 
+        });
+    });
 });
 
 
