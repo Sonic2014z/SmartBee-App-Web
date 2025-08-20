@@ -1,0 +1,324 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="flex flex-1 min-h-0 relative">
+   <!-- Sidebar -->
+   <nav class="bg-[#C97800] w-44 flex flex-col text-white text-xs select-none fixed inset-y-0 left-0 transform -translate-x-full sm:translate-x-0 transition-transform duration-300 ease-in-out z-20" id="sidebar">
+    <div class="font-bold text-sm px-4 py-3 border-b border-[#B36E00] flex justify-between items-center">
+     <span>SMARTBEE</span>
+     <button aria-label="Cerrar menú" class="sm:hidden text-white" id="menu-close" type="button">
+      <i class="fas fa-times"></i>
+     </button>
+    </div>
+    <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] hover:bg-[#b36e00]/50" href="/panelapicultor">
+     <i class="fas fa-th-large"></i>
+     <span>Panel de Control</span>
+    </a>
+    <a class="flex items-center gap-2 px-4 py-3 bg-[#B36E00] cursor-default" href="#">
+     <i class="fas fa-chart-bar"></i>
+     <span>Vista Histórica</span>
+    </a>
+    <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] hover:bg-[#b36e00]/50" href="#">
+     <i class="fas fa-bell"></i>
+     <span>Alertas</span>
+    </a>
+    <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] hover:bg-[#b36e00]/50" href="#">
+     <i class="fas fa-cog"></i>
+     <span>Configuración</span>
+    </a>
+   </nav>
+
+   <!-- Main -->
+<main class="flex-1 p-6 md:p-8 overflow-auto ml-0 sm:ml-44">
+  <h2 class="text-xl font-bold mb-4">Gráficos de Temperatura y Humedad por Nodo</h2>
+
+  <!-- Filtros -->
+  <div class="flex flex-wrap gap-2 mb-6">
+    <button class="px-4 py-2 bg-[#C97800] text-white rounded-lg hover:bg-[#b36e00]" onclick="filtrarDatos('dia')">Por Día</button>
+    <button class="px-4 py-2 bg-[#C97800] text-white rounded-lg hover:bg-[#b36e00]" onclick="filtrarDatos('semana')">Por Semana</button>
+    <button class="px-4 py-2 bg-[#C97800] text-white rounded-lg hover:bg-[#b36e00]" onclick="filtrarDatos('mes')">Por Mes</button>
+    <button class="px-4 py-2 bg-[#C97800] text-white rounded-lg hover:bg-[#b36e00]" onclick="filtrarDatos('anio')">Por Año</button>
+  </div>
+
+  <!-- Selector de Vista -->
+  <div class="mb-6">
+    <label class="mr-4 font-semibold">Vista:</label>
+    <select id="vistaSelector" class="px-3 py-2 border rounded-lg" onchange="filtrarDatos(rangoActual)">
+      <option value="combinado">Combinado</option>
+      <option value="separado">Separado</option>
+    </select>
+  </div>
+
+  <!-- Contenedor de gráficos -->
+  <div id="chartsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+
+  <script>
+    let datosOriginales = [];
+    let charts = [];
+    let rangoActual = "dia";
+
+    async function cargarDatos() {
+      const response = await fetch("/api/datos");
+      const data = await response.json();
+      datosOriginales = data;
+      filtrarDatos("dia");
+    }
+
+    function filtrarDatos(rango) {
+      rangoActual = rango;
+      const vista = document.getElementById("vistaSelector").value;
+
+      charts.forEach(chart => chart.destroy());
+      charts = [];
+      document.getElementById("chartsContainer").innerHTML = "";
+
+      const nodos = {};
+      datosOriginales.forEach(item => {
+        const fecha = new Date(item.fecha);
+        if (!nodos[item.nodo_id]) {
+          nodos[item.nodo_id] = { fechas: [], temperaturas: [], humedades: [] };
+        }
+        nodos[item.nodo_id].fechas.push(fecha);
+        nodos[item.nodo_id].temperaturas.push(item.temperatura);
+        nodos[item.nodo_id].humedades.push(item.humedad);
+      });
+
+      Object.keys(nodos).forEach(nodoId => {
+        const nodo = nodos[nodoId];
+        const filtrado = filtrarPorRango(nodo, rango);
+
+        const divNodo = document.createElement("div");
+        divNodo.className = "bg-white shadow-lg rounded-lg p-4 mb-6";
+        divNodo.innerHTML = `<h3 class="text-lg font-semibold mb-2">Nodo: ${nodoId}</h3>`;
+        document.getElementById("chartsContainer").appendChild(divNodo);
+
+        if (vista === "combinado") {
+          const canvas = document.createElement("canvas");
+          divNodo.appendChild(canvas);
+          const ctx = canvas.getContext("2d");
+
+          const chart = new Chart(ctx, {
+            type: "line",
+            data: {
+              labels: filtrado.fechas,
+              datasets: [
+                {
+                  label: "Temperatura (°C)",
+                  data: filtrado.temperaturas,
+                  borderColor: "red",
+                  backgroundColor: "rgba(255,0,0,0.2)",
+                  fill: true,
+                  tension: 0.3
+                },
+                {
+                  label: "Humedad (%)",
+                  data: filtrado.humedades,
+                  borderColor: "blue",
+                  backgroundColor: "rgba(0,0,255,0.2)",
+                  fill: true,
+                  tension: 0.3
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              scales: {
+                x: { ticks: { autoSkip: true, maxTicksLimit: 10 } }
+              }
+            }
+          });
+          charts.push(chart);
+
+        } else {
+          const canvasTemp = document.createElement("canvas");
+          const canvasHum = document.createElement("canvas");
+          divNodo.appendChild(canvasTemp);
+          divNodo.appendChild(canvasHum);
+
+          const ctxTemp = canvasTemp.getContext("2d");
+          const ctxHum = canvasHum.getContext("2d");
+
+          const chartTemp = new Chart(ctxTemp, {
+            type: "line",
+            data: {
+              labels: filtrado.fechas,
+              datasets: [{
+                label: "Temperatura (°C)",
+                data: filtrado.temperaturas,
+                borderColor: "red",
+                backgroundColor: "rgba(255,0,0,0.2)",
+                fill: true,
+                tension: 0.3
+              }]
+            },
+            options: { responsive: true }
+          });
+
+          const chartHum = new Chart(ctxHum, {
+            type: "line",
+            data: {
+              labels: filtrado.fechas,
+              datasets: [{
+                label: "Humedad (%)",
+                data: filtrado.humedades,
+                borderColor: "blue",
+                backgroundColor: "rgba(0,0,255,0.2)",
+                fill: true,
+                tension: 0.3
+              }]
+            },
+            options: { responsive: true }
+          });
+
+          charts.push(chartTemp, chartHum);
+        }
+      });
+    }
+
+    function filtrarPorRango(nodo, rango) {
+      const hoy = new Date();
+      let fechas = [], temps = [], hums = [];
+
+      nodo.fechas.forEach((fecha, i) => {
+        let incluir = false;
+        switch (rango) {
+          case "dia":
+            incluir = fecha.toDateString() === hoy.toDateString();
+            break;
+          case "semana":
+            const semanaPasada = new Date();
+            semanaPasada.setDate(hoy.getDate() - 7);
+            incluir = fecha >= semanaPasada && fecha <= hoy;
+            break;
+          case "mes":
+            incluir = fecha.getMonth() === hoy.getMonth() && fecha.getFullYear() === hoy.getFullYear();
+            break;
+          case "anio":
+            incluir = fecha.getFullYear() === hoy.getFullYear();
+            break;
+        }
+        if (incluir) {
+          fechas.push(fecha.toLocaleDateString());
+          temps.push(nodo.temperaturas[i]);
+          hums.push(nodo.humedades[i]);
+        }
+      });
+
+      return { fechas, temperaturas: temps, humedades: hums };
+    }
+
+    cargarDatos();
+  </script>
+</main>
+
+
+
+  </div>
+
+  <script>
+    async function cargarDatos() {
+      const response = await fetch("http://localhost:3000/api/datos");
+      const data = await response.json();
+
+      const nodos = {};
+      data.forEach(item => {
+        if (!nodos[item.nodo_id]) {
+          nodos[item.nodo_id] = { fechas: [], temperaturas: [], humedades: [] };
+        }
+        nodos[item.nodo_id].fechas.push(item.fecha);
+        nodos[item.nodo_id].temperaturas.push(item.temperatura);
+        nodos[item.nodo_id].humedades.push(item.humedad);
+      });
+
+      const container = document.getElementById("chartsContainer");
+
+      Object.keys(nodos).forEach(nodoId => {
+        const nodo = nodos[nodoId];
+
+        const divNodo = document.createElement("div");
+        divNodo.className = "bg-white p-6 rounded-lg shadow-md";
+
+        divNodo.innerHTML = `
+          <h3 class="text-lg font-semibold mb-4">🐝 Nodo: ${nodoId}</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <canvas id="temp_${nodoId}" height="250"></canvas>
+            <canvas id="hum_${nodoId}" height="250"></canvas>
+          </div>
+          <div class="mt-6">
+            <canvas id="combined_${nodoId}" height="300"></canvas>
+          </div>
+        `;
+        container.appendChild(divNodo);
+
+        new Chart(document.getElementById(`temp_${nodoId}`).getContext('2d'), {
+          type: 'line',
+          data: {
+            labels: nodo.fechas,
+            datasets: [{
+              label: '🌡️ Temperatura (°C)',
+              data: nodo.temperaturas,
+              borderColor: 'red',
+              backgroundColor: 'rgba(255,0,0,0.2)',
+              fill: true,
+              tension: 0.3
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: true } },
+            scales: { x: { ticks: { autoSkip: true, maxTicksLimit: 10 } } }
+          }
+        });
+
+        new Chart(document.getElementById(`hum_${nodoId}`).getContext('2d'), {
+          type: 'line',
+          data: {
+            labels: nodo.fechas,
+            datasets: [{
+              label: '💧 Humedad (%)',
+              data: nodo.humedades,
+              borderColor: 'blue',
+              backgroundColor: 'rgba(0,0,255,0.2)',
+              fill: true,
+              tension: 0.3
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: true } },
+            scales: { x: { ticks: { autoSkip: true, maxTicksLimit: 10 } } }
+          }
+        });
+
+        new Chart(document.getElementById(`combined_${nodoId}`).getContext('2d'), {
+          type: 'line',
+          data: {
+            labels: nodo.fechas,
+            datasets: [
+              {
+                label: '🌡️ Temperatura (°C)',
+                data: nodo.temperaturas,
+                borderColor: 'red',
+                backgroundColor: 'rgba(255,0,0,0.2)',
+                fill: false,
+                tension: 0.3
+              },
+              {
+                label: '💧 Humedad (%)',
+                data: nodo.humedades,
+                borderColor: 'blue',
+                backgroundColor: 'rgba(0,0,255,0.2)',
+                fill: false,
+                tension: 0.3
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: true } },
+            scales: { x: { ticks: { autoSkip: true, maxTicksLimit: 10 } } }
+          }
+        });
+      });
+    }
+
+    cargarDatos();
+  </script>

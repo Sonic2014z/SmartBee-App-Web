@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const oMySQL = require("mysql");
+const cors = require("cors");
 const app = express();
 const expressLayouts = require('express-ejs-layouts');
 const port = 3000;
@@ -65,6 +66,29 @@ app.get('/admin/usuarios', (req, res) => {
     });
 });
 
+//vista historica
+app.get("/api/datos", (req, res) => {
+    const query = "SELECT id, nodo_id, topico, payload, fecha FROM nodo_mensaje"; 
+    oConexion.query(query, (err, results) => { 
+        if (err) {
+            console.error("Error en la consulta:", err);
+            res.status(500).json({ error: "Error en la consulta" });
+            return;
+        }
+
+        const parsedResults = results.map(r => {
+            try {
+                const payload = JSON.parse(r.payload);
+                return { ...r, ...payload };
+            } catch {
+                return r;
+            }
+        });
+
+        res.json(parsedResults);
+    });
+});
+
 app.get('/admin/nodos', (req, res) => {
      const sql = `
         SELECT n.id AS nodo_id,
@@ -121,6 +145,10 @@ app.get('/admin/nuevonodo', (req, res) => {
 
 app.get('/recuperar', (req, res) => {
     res.render('recuperar', { layout: false });
+});
+
+app.get('/vistahistorica', (req, res) => {
+    res.render('vistahistorica', { layout: "layout-apicultor", title: "Vista Histórica | SmartBee" });
 });
 
 app.get('/restablecer', (req, res) => {
