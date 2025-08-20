@@ -36,6 +36,14 @@
           </div>
 
 
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">clave</label>
+            <input type="password"  placeholder="*******" name="clave" id="clave"
+              class="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#D17A08] focus:border-[#D17A08]" />
+          </div>
+
+
+
           <!--Comuna-->
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-1">Comuna</label>
@@ -94,9 +102,10 @@ formulario.addEventListener('submit', function(event) {
     const comuna = document.getElementById('comuna').value;
     const rol = document.getElementById('rol').value;
     const estado = document.getElementById('estado').value;
+    const clave = document.getElementById('clave').value;
 
 
-    if (!id || !nombres || !apellidos || !rol || !estado || !comuna) {
+    if (!id || !nombres || !apellidos || !rol || !estado || !comuna || !clave) {
         Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -128,7 +137,8 @@ formulario.addEventListener('submit', function(event) {
         apellidos: apellidos,
         comuna: comuna,
         rol: rol,
-        estado: estado
+        estado: estado,
+        clave: clave
      }
 
 

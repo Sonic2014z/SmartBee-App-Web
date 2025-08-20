@@ -1,12 +1,15 @@
 <div class="bg-white rounded-lg shadow p-6 overflow-x-auto">
 
-    <a href="/admin/usuarios/nuevo" 
-       class="text-white px-4 py-2 rounded mb-4 inline-block"
-       style="background-color:#d17a00;"
-       onmouseover="this.style.backgroundColor='#b86500'" 
-       onmouseout="this.style.backgroundColor='#d17a00'">
-       Agregar Usuario
-    </a>
+
+     <div class="flex justify-end mb-4">
+      <a href="/admin/usuarios/nuevo"
+        class="flex items-center space-x-2 bg-[#D87E0A] hover:bg-[#b56408] text-white text-sm font-semibold rounded px-4 py-2 shadow transition">
+        <i class="fas fa-plus"></i>
+        <span> Agregar Usuario</span>
+      </a>
+    </div>
+
+
 
     <table id="usuariosTable" class="min-w-full table-auto border-collapse display">
         <thead>

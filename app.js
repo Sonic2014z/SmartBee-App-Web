@@ -390,7 +390,7 @@ app.get('/admin/usuarios/nuevo', (req, res) => {
 
 app.post('/admin/usuarios/registrar', (req, res) => {
     const { apellidos, estado, nombres, rol, id, comuna } = req.body;
-    const clave = req.body.id; // clave = mismo id
+    const clave = req.body.clave; // clave = mismo id
 
     if (!apellidos || !estado || !nombres || !rol || !id || !clave || !comuna) {
         return res.status(400).json({ success: false, message: 'Todos los campos son obligatorios' });
