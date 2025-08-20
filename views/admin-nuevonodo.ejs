@@ -1,0 +1,223 @@
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<section class="bg-white rounded-lg shadow-md p-6 max-w-5xl mx-auto w-full" style="min-width: 320px;">
+    <header class="flex items-center gap-3 mb-6 text-[#8B5E1E]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+            stroke="#8B5E1E" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M3 7l9 6 9-6M3 7l9-6 9 6" />
+        </svg>
+        <h1 class="font-semibold text-lg sm:text-xl">Creación de nodo nuevo</h1>
+    </header>
+
+    <!-- FORMULARIO -->
+    <form action="/admin/nuevonodo" method="POST" autocomplete="off"
+        class="grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-6 text-xs sm:text-sm text-[#4B3B0A]">
+
+        <!-- SIEMPRE: Datos del nodo -->
+        <div>
+            <label for="nodo_id" class="block mb-1 font-semibold">ID Nodo:</label>
+            <input type="text" id="nodo_id" name="nodo_id" placeholder="Ej: NODO-XXXX" pattern="^NODO-[A-Za-z0-9]+$"
+                required
+                class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#C97800]" />
+            <small class="text-gray-500">Debe comenzar con "NODO-"</small>
+        </div>
+
+        <div class="sm:col-span-2">
+            <label for="nodo_descripcion" class="block mb-1 font-semibold">Descripción del nodo:</label>
+            <input type="text" id="nodo_descripcion" name="nodo_descripcion" placeholder="ESP32 DEVKIT, sensores, etc."
+                required
+                class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#C97800]" />
+        </div>
+
+        <div>
+            <label for="tipoNodo" class="block mb-1 font-semibold">Tipo de nodo:</label>
+            <select id="tipoNodo" name="tipoNodo" required
+                class="w-full rounded border border-gray-300 px-3 py-2 text-sm text-[#4B3B0A] focus:outline-none focus:ring-1 focus:ring-[#C97800]">
+                <option value="">-- Selecciona --</option>
+                <option value="Colmena">Colmena</option>
+                <option value="Ambiental">Ambiental</option>
+            </select>
+        </div>
+
+        <!-- SEGÚN TIPO: Campos adicionales -->
+        <div id="extraFields" class="hidden contents">
+            <!-- ID dinámico segun tipo -->
+            <div id="idField"></div>
+
+            <!-- Dueño -->
+            <div>
+                <label for="dueno" class="block mb-1 font-semibold">Dueño:</label>
+                <!-- <input type="text" id="dueno" name="dueno" required
+                    class="w-full rounded border border-gray-300 px-3 py-2 text-sm text-[#4B3B0A] focus:outline-none focus:ring-1 focus:ring-[#C97800]" /> -->
+            
+            <select class="js-example-basic-single" id="dueno" name="dueno">
+  <option value="">Selecciona una opcion valida</option>
+
+    <% usuarios.forEach(usuario => { %>
+        <option value="<%= usuario.id %>"> <%= usuario.id %> | <%= usuario.nombre %> <%= usuario.apellido %> (<%= usuario.rol === 'API' ? 'Apicultor' : 'Administrador' %>)</option>
+    <% }); %>
+
+</select>
+            
+                </div>
+
+            <!-- Latitud -->
+            <div>
+                <label for="latitud" class="block mb-1 font-semibold">Latitud:</label>
+                <input type="text" id="latitud" name="latitud" value="-34.15" required
+                    class="w-full rounded border border-gray-300 px-3 py-2 text-sm text-[#4B3B0A] focus:outline-none focus:ring-1 focus:ring-[#C97800]" />
+            </div>
+
+            <!-- Longitud + botones mapa -->
+            <div>
+                <label for="longitud" class="block mb-1 font-semibold">Longitud:</label>
+                <div class="flex gap-2 items-center">
+                    <input type="text" id="longitud" name="longitud" value="-70.75" required
+                        class="flex-1 rounded border border-gray-300 px-3 py-2 text-sm text-[#4B3B0A] focus:outline-none focus:ring-1 focus:ring-[#C97800]" />
+                    <button type="button" id="btnMapa" aria-label="Elegir en mapa"
+                        class="text-[#4B3B0A] hover:text-[#C97800] px-2 py-1 border rounded">
+                        Mapa
+                    </button>
+                    <button type="button" id="btnCerrarMapa"
+                        class="text-[#C97800] hover:text-white bg-white px-2 py-1 border rounded hover:bg-[#C97800] transition">
+                        X
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mapa -->
+            <div class="sm:col-span-3">
+                <div id="map" class="w-full h-96 rounded-lg hidden"></div>
+            </div>
+
+            <!-- Descripción entidad (colmena o estación) -->
+            <div class="sm:col-span-3">
+                <label for="descripcion" class="block mb-1 font-semibold">Descripción (colmena/estación):</label>
+                <!-- <textarea id="descripcion" name="descripcion" rows="3" required
+                    class="w-full rounded border border-gray-300 px-3 py-2 text-sm text-[#4B3B0A] focus:outline-none focus:ring-1 focus:ring-[#C97800] resize-none"></textarea> -->
+          
+                <select id="descripcion" name="descripcion"  required
+                    class="w-full rounded border border-gray-300 px-3 py-2 text-sm text-[#4B3B0A] focus:outline-none focus:ring-1 focus:ring-[#C97800]">
+                    <option value="">-- Selecciona --</option>
+                    <option value="Colmena">Colmena</option>
+                    <option value="Estación">Estación</option>
+                </select>
+
+
+                </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="sm:col-span-3 flex flex-col sm:flex-row gap-3 mt-4">
+            <button type="submit"
+                class="inline-flex items-center gap-2 bg-[#C97800] hover:bg-[#b36e00] text-white text-xs sm:text-sm font-semibold rounded px-4 py-2">
+                Crear nuevo nodo
+            </button>
+            <a href="/admin/nodos"
+                class="inline-flex items-center gap-2 bg-[#C8102E] hover:bg-[#a10b22] text-white text-xs sm:text-sm font-semibold rounded px-4 py-2">
+                Cancelar
+            </a>
+
+        </div>
+    </form>
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+    <script>
+        const tipoNodoSelect = document.getElementById('tipoNodo');
+        const extraFields = document.getElementById('extraFields');
+        const idField = document.getElementById('idField');
+
+        const btnMapa = document.getElementById('btnMapa');
+        const btnCerrarMapa = document.getElementById('btnCerrarMapa');
+        const mapDiv = document.getElementById('map');
+
+        let mapInitialized = false;
+        let map;
+        let marker;
+
+        // Mostrar/ocultar campos extra y renderizar ID dinámico
+        function renderExtraFields() {
+            const tipo = tipoNodoSelect.value;
+            if (!tipo) {
+                extraFields.classList.add('hidden');
+                idField.innerHTML = '';
+                return;
+            }
+            extraFields.classList.remove('hidden');
+
+            if (tipo === 'Colmena') {
+                // genera ID colmena con prefijo COL-
+                const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+                const nuevoId = `COL-${random}`;
+
+                idField.innerHTML = `
+          <label for="colmena_id" class="block mb-1 font-semibold">ID Colmena:</label>
+          <input type="text" id="colmena_id" name="colmena_id" value="${nuevoId}"
+            pattern="^COL-[A-Za-z0-9]+$"
+            required
+            class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#C97800]" />
+          <small class="text-gray-500">Debe comenzar con "COL-"</small>
+        `;
+            } else {
+                idField.innerHTML = `
+          <label for="estacion_id" class="block mb-1 font-semibold">ID Estación:</label>
+          <input type="text" id="estacion_id" name="estacion_id"
+            pattern="^EST-[A-Za-z0-9]+$"
+            required
+            class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#C97800]" />
+          <small class="text-gray-500">Debe comenzar con "EST-"</small>
+        `;
+            }
+        }
+
+        tipoNodoSelect.addEventListener('change', renderExtraFields);
+        renderExtraFields();
+
+        // Abrir mapa
+        btnMapa.addEventListener('click', () => {
+            mapDiv.classList.remove('hidden');
+
+            const lat = parseFloat(document.getElementById('latitud').value) || -34.15;
+            const lng = parseFloat(document.getElementById('longitud').value) || -70.75;
+
+            if (!mapInitialized) {
+                map = L.map('map').setView([lat, lng], 13);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; OpenStreetMap'
+                }).addTo(map);
+
+                marker = L.marker([lat, lng]).addTo(map);
+
+                map.on('click', function (e) {
+                    document.getElementById('latitud').value = e.latlng.lat.toFixed(5);
+                    document.getElementById('longitud').value = e.latlng.lng.toFixed(5);
+                    marker.setLatLng(e.latlng);
+                });
+
+                mapInitialized = true;
+            } else {
+                map.setView([lat, lng], map.getZoom() || 13);
+                marker.setLatLng([lat, lng]);
+                setTimeout(() => map.invalidateSize(), 0);
+            }
+        });
+
+        // Cerrar mapa
+        btnCerrarMapa.addEventListener('click', () => {
+            mapDiv.classList.add('hidden');
+        });
+
+
+        $(document).ready(function() {
+    $('.js-example-basic-single').select2();
+});
+
+    </script>
+</section>

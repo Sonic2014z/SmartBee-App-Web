@@ -17,6 +17,8 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.js"
         integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -78,7 +80,7 @@
                 </button>
             </div>
 
-            <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] bg-[#B36E00] font-semibold"
+            <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] hover:bg-[#B36E00]/50 font-semibold"
                 href="/paneladministrador">
                 <i class="fas fa-th-large text-xs"></i>
                 <span>Panel Principal</span>
@@ -98,7 +100,7 @@
                 <span>Configuración</span>
             </a>
             <div class="divider"></div>
-            <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] hover:bg-[#b36e00]/50" href="/logout">
+            <a class="flex items-center gap-2 px-4 py-3 border-b border-[#B36E00] hover:bg-[#b36e00]/50"  onclick="salir()">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Cerrar Sesión</span>
             </a>
@@ -127,6 +129,32 @@
                 sidebar.classList.add('-translate-x-full');
             }
         });
+
+
+        
+    function salir(){
+
+      Swal.fire({
+  title: "Consulta",
+  text: "Estas seguro de salir?",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#3085d6",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "Si, Salir!",
+  cancelButtonText: "Cancelar"
+}).then((result) => {
+  if (result.isConfirmed) {
+
+    
+    window.location.href = "/logout";
+
+
+  }
+});
+
+    }
+
     </script>
 
 </body>

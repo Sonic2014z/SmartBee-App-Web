@@ -1,6 +1,226 @@
-<h4>Panel de Administración</h4>
-<p>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab necessitatibus accusamus doloremque quisquam
-    blanditiis laborum, voluptate minus voluptatem ipsa deserunt saepe? Tempora ad dolores, debitis temporibus
-    molestias id quibusdam in!
-</p>
+<h1 class="text-3xl font-extrabold">Panel Principal</h1>
+</br>
+<span class="text-xl font-bold">Estadísticas:</span>
+
+<section class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+    <!-- Usuarios Widget (Touchable Card) -->
+    <a href="/admin/usuarios"
+        class="bg-white rounded-lg shadow p-4 flex flex-col items-center transition hover:bg-[#FFF7E0] active:bg-[#FFE4B3] focus:outline-none focus:ring-2 focus:ring-[#D17A08] cursor-pointer">
+        <i class="fas fa-users text-3xl text-[#D17A08] mb-2"></i>
+        <div class="text-2xl font-bold">
+            <%= stats.usuarios %>
+        </div>
+        <div class="text-sm text-gray-600 font-bold">Usuarios registrados</div>
+        <span class="mt-2 text-[#D17A08] hover:underline text-xs">Ver usuarios</span>
+    </a>
+    <!-- Nodos Widget (Touchable Card) -->
+    <a href="/admin/nodos"
+        class="bg-white rounded-lg shadow p-4 flex flex-col items-center transition hover:bg-[#FFF7E0] active:bg-[#FFE4B3] focus:outline-none focus:ring-2 focus:ring-[#D87E0A] cursor-pointer">
+        <i class="fas fa-network-wired text-3xl text-[#D87E0A] mb-2"></i>
+        <div class="text-2xl font-bold">
+            <%= stats.nodos %>
+        </div>
+        <div class="text-sm text-gray-600 font-bold">Nodos activos</div>
+        <span class="mt-2 text-[#D87E0A] hover:underline text-xs">Ver nodos</span>
+    </a>
+</section>
+
+<h2 class="text-lg sm:text-xl font-bold mt-6 sm:mt-8 mb-3 sm:mb-4">Sensores por Nodo</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+    <% nodeData.forEach(nd=> { %>
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6 flex flex-col items-center">
+            <div class="font-semibold text-sm sm:text-base mb-2">
+                Nodo: <%= nd.nodo_id %>
+            </div>
+            <div class="w-full flex flex-col gap-3 sm:gap-4">
+                <div>
+                    <canvas id="bullet-temp-<%= nd.nodo_id %>" height="50" class="max-w-full"></canvas>
+                    <div class="text-center text-xs sm:text-sm mt-1 sm:mt-2">
+                        Temperatura: <%= nd.temperatura %>°C
+                    </div>
+                </div>
+                <div>
+                    <canvas id="bullet-hum-<%= nd.nodo_id %>" height="50" class="max-w-full"></canvas>
+                    <div class="text-center text-xs sm:text-sm mt-1 sm:mt-2">
+                        Humedad: <%= nd.humedad %>%
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% }) %>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+<% nodeData.forEach(nd => { %>
+    // Bullet chart for temperature
+    new Chart(document.getElementById('bullet-temp-<%= nd.nodo_id %>'), {
+        type: 'bar',
+        data: {
+            labels: [''],
+            datasets: [
+                {
+                    label: 'Rango',
+                    data: [50], // max range
+                    backgroundColor: '#f3f3f3',
+                    borderWidth: 0,
+                    barPercentage: 1,
+                    categoryPercentage: 1
+                },
+                {
+                    label: 'Temperatura',
+                    data: [<%= nd.temperatura %>],
+                    backgroundColor: '#D87E0A',
+                    borderWidth: 0,
+                    barPercentage: 0.5,
+                    categoryPercentage: 1
+                },
+                {
+                    label: 'Objetivo',
+                    data: [22], // target value, adjust as needed
+                    backgroundColor: '#FFD700',
+                    borderWidth: 0,
+                    barPercentage: 0.1,
+                    categoryPercentage: 1
+                }
+            ]
+        },
+        options: {
+        responsive: true,
+        indexAxis: 'y',
+        plugins: {
+            legend: { display: false }
+        },
+        scales: {
+            x: {
+                min: 0,
+                max: 50,
+                grid: { display: false }
+            },
+            y: {
+                grid: { display: false },
+                ticks: { display: false }
+            }
+        }
+    }
+  });
+
+    // Bullet chart for humidity
+    new Chart(document.getElementById('bullet-hum-<%= nd.nodo_id %>'), {
+        type: 'bar',
+        data: {
+            labels: [''],
+            datasets: [
+                {
+                    label: 'Rango',
+                    data: [100], // max range
+                    backgroundColor: '#f3f3f3',
+                    borderWidth: 0,
+                    barPercentage: 1,
+                    categoryPercentage: 1
+                },
+                {
+                    label: 'Humedad',
+                    data: [<%= nd.humedad %>],
+                    backgroundColor: '#1E90FF',
+                    borderWidth: 0,
+                    barPercentage: 0.5,
+                    categoryPercentage: 1
+                },
+                {
+                    label: 'Objetivo',
+                    data: [65], // target value, adjust as needed
+                    backgroundColor: '#FFD700',
+                    borderWidth: 0,
+                    barPercentage: 0.1,
+                    categoryPercentage: 1
+                }
+            ]
+        },
+        options: {
+            indexAxis: 'y',
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    min: 0,
+                    max: 100,
+                    grid: { display: false }
+                },
+                y: {
+                    grid: { display: false },
+                    ticks: { display: false }
+                }
+            }
+        }
+    });
+<% }) %>
+</script>
+
+
+<h2 class="text-xl font-bold">
+    Acciones rápidas:
+</h2>
+
+<section class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+    <a href="/admin/usuarios/nuevo"
+        class="bg-white rounded-lg shadow p-4 flex flex-col items-center transition hover:bg-[#FFF7E0] active:bg-[#FFE4B3] focus:outline-none focus:ring-2 focus:ring-[#D17A08] cursor-pointer">
+        <i class="fas fa-user-plus text-3xl text-[#D17A08] mb-2"></i>
+        <span class="mt-2 text-[#D87E0A] font-semibold text-base text-center">Crear un nuevo usuario</span>
+    </a>
+
+    <a href="/admin/nuevonodo"
+        class="bg-white rounded-lg shadow p-4 flex flex-col items-center transition hover:bg-[#FFF7E0] active:bg-[#FFE4B3] focus:outline-none focus:ring-2 focus:ring-[#D17A08] cursor-pointer">
+        <i class="fas fa-map-marker-alt text-3xl text-[#D17A08] mb-2"></i>
+        <span class="mt-2 text-[#D87E0A] font-semibold text-base text-center">Crear un nuevo nodo</span>
+    </a>
+
+    <a href="/logout"
+        class="bg-white rounded-lg shadow p-4 flex flex-col items-center transition hover:bg-[#FFF7E0] active:bg-[#FFE4B3] focus:outline-none focus:ring-2 focus:ring-[#D17A08] cursor-pointer">
+        <i class="fas fa-sign-out-alt text-3xl text-[#D17A08] mb-2"></i>
+        <span class="mt-2 text-[#D87E0A] font-semibold text-base text-center">Cerrar sesión</span>
+    </a>
+</section>
+
+<!-- Chart.js Gauge Plugin -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-gauge@0.3.0/dist/chartjs-gauge.min.js"></script>
+<script>
+<% nodeData.forEach(nd => { %>
+    new Chart(document.getElementById('gauge-temp-<%= nd.nodo_id %>'), {
+        type: 'gauge',
+        data: {
+            datasets: [{
+                value: <%= nd.temperatura %>,
+                minValue: 0,
+                data: [0, 10, 20, 30, 40, 50],
+                backgroundColor: ['#e0e0e0', '#ffd700', '#ffa500', '#ff4500', '#d87e0a', '#d17a00']
+            }]
+        },
+        options: {
+            title: { display: false },
+            needle: { radiusPercentage: 2, widthPercentage: 3.2, lengthPercentage: 80, color: 'rgba(0, 0, 0, 1)' },
+            valueLabel: { display: true }
+        }
+    });
+
+    new Chart(document.getElementById('gauge-hum-<%= nd.nodo_id %>'), {
+        type: 'gauge',
+        data: {
+            datasets: [{
+                value: <%= nd.humedad %>,
+                minValue: 0,
+                data: [0, 20, 40, 60, 80, 100],
+                backgroundColor: ['#e0e0e0', '#b3e5fc', '#81d4fa', '#4fc3f7', '#0288d1', '#01579b']
+            }]
+        },
+        options: {
+            title: { display: false },
+            needle: { radiusPercentage: 2, widthPercentage: 3.2, lengthPercentage: 80, color: 'rgba(0, 0, 0, 1)' },
+            valueLabel: { display: true }
+        }
+    });
+<% }) %>
+</script>
