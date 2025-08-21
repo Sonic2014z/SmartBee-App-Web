@@ -10,8 +10,9 @@ const port = 3000;
 const oConexion = oMySQL.createConnection({
     host: "localhost",
     database: "smartbee",
-    user: "root",
-    password: ""
+    user: "smartbee.app",
+    port: 3306,
+    password: "aeshae7JooG1Thah1oz5"
 });
 
 app.set('view engine', 'ejs');
