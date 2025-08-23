@@ -35,3 +35,11 @@ app.use(routes);
 app.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}`);
 });
+
+// esto funcion que ayuda tal cosa tal componente
+
+
+// consultas base dde datos  ->  bd controladores segun la entidad
+// logica controladores -> bd controladores segun la entidad
+// lo que no sepan en este archivo solo con comentario de que hace y como funciona
+
