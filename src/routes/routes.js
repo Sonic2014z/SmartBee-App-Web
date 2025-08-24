@@ -25,9 +25,6 @@ app.get('/', (req, res) => {
     res.render('index', { layout: false, title: 'Panel Principal | SmartBee' });
 });
 
-app.get('/recuperar', (req, res) => {
-    res.render('recuperar', { layout: false });
-});
 
 app.get('/restablecer', (req, res) => {
     res.render('restablecer', { layout: false });

@@ -43,3 +43,28 @@ app.listen(port, () => {
 // logica controladores -> bd controladores segun la entidad
 // lo que no sepan en este archivo solo con comentario de que hace y como funciona
 
+// +-------------------------------------------------------------------+
+//vista historican (No esta en ningun lado)
+// +-------------------------------------------------------------------+
+app.get("/api/datos", (req, res) => {
+    const query = "SELECT id, nodo_id, topico, payload, fecha FROM nodo_mensaje"; 
+    oConexion.query(query, (err, results) => { 
+        if (err) {
+            console.error("Error en la consulta:", err);
+            res.status(500).json({ error: "Error en la consulta" });
+            return;
+        }
+
+        const parsedResults = results.map(r => {
+            try {
+                const payload = JSON.parse(r.payload);
+                return { ...r, ...payload };
+            } catch {
+                return r;
+            }
+        });
+
+        res.json(parsedResults);
+    });
+});
+// +-------------------------------------------------------------------+

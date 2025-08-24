@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
-const oConexion = require('../connection'); // tu archivo de conexión a BD
+const oConexion = require('../connection'); 
+// tu archivo de conexión a BD
 
 const loginController = {
 
@@ -54,7 +55,8 @@ const loginController = {
                 console.error(err);
                 return res.status(500).send('Error al cerrar sesión');
             }
-            res.redirect('/'); // Redirigir al inicio después de cerrar sesión
+            res.redirect('/'); 
+            // Redirigir al inicio después de cerrar sesión
         });
     }
 };

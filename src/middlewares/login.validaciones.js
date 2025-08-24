@@ -5,7 +5,6 @@ const validarLogin = [
 
 ]
 // API para obtener datos del usuario logueado (intento de midelware)
-/*
 app.get('/api/usuario', (req, res) => {
     if (!req.session.userId) {
         return res.status(401).json({ success: false, message: 'No hay usuario logueado' });
@@ -73,4 +72,18 @@ router.get('/panel-admin', verificarToken, (req, res) => {
   }
   res.send('Bienvenido admin');
 });
-*/
+
+///////////////////////////////////////////////////
+
+// Middleware para requerir login en rutas privadas
+// Si el usuario no tiene sesión, lo redirige al login
+function requireLogin(req, res, next) {
+    if (!req.session.userId) {
+        // Comentario: Si no hay sesión, redirige a la página principal (login)
+        return res.redirect('/');
+    }
+    next();
+}
+
+
+

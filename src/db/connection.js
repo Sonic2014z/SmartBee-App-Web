@@ -28,3 +28,14 @@ function connMYSQL() {
 connMYSQL();
 
 module.exports = conn
+
+/*
+const oConexion = oMySQL.createConnection({
+    host: "localhost",
+    database: "smartbee",
+    user: "smartbee.app",
+    port: 3306,
+    password: "aeshae7JooG1Thah1oz5"
+});
+
+*/

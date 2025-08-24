@@ -13,3 +13,4 @@ function verificarRol(rolesPermitidos) {
 }
 
 module.exports = { verificarRol };
+
