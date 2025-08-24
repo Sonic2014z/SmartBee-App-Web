@@ -1,11 +1,8 @@
 const { Router } = require('express');
 const app = Router();
 
-//middlewares
-const { requireLogin } = require('../middlewares/auth');
-
 // controlador 
-const adminController = require('../controllers/admin.controller');
+const adminController = require('../db/controller/admin.controller');
 
 // 1 Obtener todos los usuarios
 app.get('/usuarios', adminController.getUsuarios);
@@ -17,7 +14,7 @@ app.get('/nodos', adminController.getNodos);
 app.get('/nuevonodo', adminController.getNuevoNodo);
 
 // 4 Panel administrador
-app.get('/paneladministrador', requireLogin, adminController.getPanel);
+app.get('/paneladministrador', adminController.getPanel);
 
 // 5 Vista registro usuario
 app.get('/usuarios/nuevo', adminController.getRegistroUsuario);

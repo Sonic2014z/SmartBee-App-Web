@@ -5,10 +5,36 @@ const app = Router();
 // controlador bd
 const apicultorController = require ('../db/controller/apicultor.controller');
 
+/*
 app.get('/vistahistorica', (req, res) => {
     res.render('vistahistorica', { layout: "layout-apicultor", title: "Vista Histórica | SmartBee" });
 });
 
+// +-------------------------------------------------------------------+
+//vista historican (No esta en ningun lado)
+// +-------------------------------------------------------------------+
+app.get("/api/datos", (req, res) => {
+    const query = "SELECT id, nodo_id, topico, payload, fecha FROM nodo_mensaje"; 
+    oConexion.query(query, (err, results) => { 
+        if (err) {
+            console.error("Error en la consulta:", err);
+            res.status(500).json({ error: "Error en la consulta" });
+            return;
+        }
+
+        const parsedResults = results.map(r => {
+            try {
+                const payload = JSON.parse(r.payload);
+                return { ...r, ...payload };
+            } catch {
+                return r;
+            }
+        });
+
+        res.json(parsedResults);
+    });
+});
+// +-------------------------------------------------------------------+
 
 // Protegido con requireLogin para evitar acceso sin sesión
 app.get('/panelapicultor', requireLogin, (req, res) => {
@@ -110,6 +136,6 @@ app.get("/apicultor/alertas-all", (req, res) => {
         });
     });
 });
-
+*/
 module.exports = app;
 

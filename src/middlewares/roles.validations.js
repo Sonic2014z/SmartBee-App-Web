@@ -1,5 +1,10 @@
 function verificarRol(rolesPermitidos) {
   return (req, res, next) => {
+    // Ignorar favicon.ico
+    if (req.path === '/favicon.ico') {
+      return next();
+    }
+
     if (!req.usuario) {
       return res.status(401).json({ msg: 'Usuario no autenticado' });
     }
@@ -13,4 +18,3 @@ function verificarRol(rolesPermitidos) {
 }
 
 module.exports = { verificarRol };
-

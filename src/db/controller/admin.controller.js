@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const oConexion = require('../connection');
+const oConexion = require('../conexion');
 
 // 1. Obtener todos los usuarios
 exports.getUsuarios = (req, res) => {

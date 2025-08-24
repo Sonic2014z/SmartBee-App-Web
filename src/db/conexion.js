@@ -2,12 +2,12 @@
 const mysql = require('mysql2');
 const config = require('../config/config.js');
 
-let conn;
+let oConexion;
 function connMYSQL() {
 
-    conn = mysql.createConnection(config.mysql);
+    oConexion = mysql.createConnection(config.mysql);
 
-    conn.connect((error) => {
+    oConexion.connect((error) => {
         if (error) {
             console.log('[db error]', error);
             setTimeout(connMYSQL, 2000);
@@ -16,7 +16,7 @@ function connMYSQL() {
         }
     });
 
-    conn.on('error', error => {
+    oConexion.on('error', error => {
         console.log('[db error]', error);
         if (error.code === 'PROTOCOL_CONNECTION_LOST') {
             connMYSQL();
@@ -27,15 +27,6 @@ function connMYSQL() {
 }
 connMYSQL();
 
-module.exports = conn
+module.exports = oConexion
 
-/*
-const oConexion = oMySQL.createConnection({
-    host: "localhost",
-    database: "smartbee",
-    user: "smartbee.app",
-    port: 3306,
-    password: "aeshae7JooG1Thah1oz5"
-});
 
-*/
